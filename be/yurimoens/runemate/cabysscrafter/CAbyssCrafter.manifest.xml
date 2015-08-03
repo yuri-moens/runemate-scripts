@@ -1,0 +1,23 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.cabysscrafter.CAbyssCrafter</main-class>
+    <name>CAbyssCrafter</name>
+    <description>Crafts any rune through the Abyss.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>RUNECRAFTING</category>
+    </categories>
+    <internal-id>CAbyssCrafter</internal-id>
+    <open-source>false</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Runecrafting</tag>
+        <tag>Abyss</tag>
+    </tags>
+    <resources>
+        <resource>be/yurimoens/runemate/cabysscrafter/resources/</resource>
+    </resources>
+</manifest>

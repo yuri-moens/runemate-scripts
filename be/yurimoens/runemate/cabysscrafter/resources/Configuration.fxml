@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="388.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Meteorite skill" />
+            <ChoiceBox fx:id="cbxMeteoriteSkill" prefWidth="150.0" GridPane.columnIndex="1" />
+            <Label text="Rune type" GridPane.rowIndex="1" />
+            <ChoiceBox fx:id="cbxRuneType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Bank preset" GridPane.rowIndex="2" />
+            <ChoiceBox fx:id="cbxBankPreset" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         </children>
+         <VBox.margin>
+            <Insets left="50.0" right="50.0" top="20.0" />
+         </VBox.margin>
+      </GridPane>
+      <GridPane prefWidth="500.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <VBox.margin>
+            <Insets left="50.0" right="50.0" top="20.0" />
+         </VBox.margin>
+         <children>
+            <RadioButton fx:id="btnRunes" mnemonicParsing="false" text="Create this many runes:">
+               <toggleGroup>
+                  <ToggleGroup fx:id="finishConditions" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="btnTime" mnemonicParsing="false" text="Run for a specific time:" toggleGroup="$finishConditions" GridPane.rowIndex="1" />
+            <RadioButton fx:id="btnResources" mnemonicParsing="false" text="Keep on going until out of essence or glories" toggleGroup="$finishConditions" GridPane.rowIndex="2" />
+            <TextField fx:id="txtRunes" GridPane.columnIndex="1" />
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="hours" GridPane.columnIndex="1">
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                  </Label>
+                  <TextField fx:id="txtHours" />
+                  <Label text="minutes" GridPane.columnIndex="3">
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                  </Label>
+                  <TextField fx:id="txtMinutes" GridPane.columnIndex="2" />
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+      <BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="112.0" prefWidth="600.0">
+         <top>
+            <Label text="Obstacles to ignore" BorderPane.alignment="CENTER" />
+         </top>
+         <center>
+            <ListView fx:id="lstIgnoreObstacles" prefHeight="40.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+      <BorderPane prefHeight="43.0" prefWidth="600.0">
+         <center>
+            <Button fx:id="btnStart" mnemonicParsing="false" text="Start" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </children>
+</VBox>
