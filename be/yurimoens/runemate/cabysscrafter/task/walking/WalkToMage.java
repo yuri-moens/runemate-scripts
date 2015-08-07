@@ -1,7 +1,9 @@
 package be.yurimoens.runemate.cabysscrafter.task.walking;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import com.runemate.game.api.hybrid.entities.Actor;
 import com.runemate.game.api.hybrid.entities.Npc;
+import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.location.navigation.Traversal;
 import com.runemate.game.api.hybrid.location.navigation.web.WebPath;
@@ -23,6 +25,7 @@ class WalkToMage extends Task {
     @Override
     public boolean validate() {
         return (getParent().validate()
+                && !((WalkToAbyss) getParent()).underAttack
                 && Players.getLocal().getPosition().getY() >= Constants.wildernessWall.getY()
                 && !Constants.mageArea.contains(Players.getLocal()));
     }
@@ -32,13 +35,22 @@ class WalkToMage extends Task {
         WebPath path = Traversal.getDefaultWeb().getPathBuilder().buildTo(Constants.mageArea.getCenter().randomize(3, 3));
 
         Execution.delayUntil(() -> {
-            if (path != null) {
+            if (path != null && (!Players.getLocal().isMoving() || Players.getLocal().distanceTo(path.getNext()) < 17.5D)) {
                 path.step(true);
+                Execution.delayUntil(() -> Players.getLocal().isMoving(), 1500, 2500);
             }
 
             if (surge != null && !surge.isCoolingDown()) {
                 surge.activate(false);
                 Execution.delayUntil(surge::isCoolingDown, 1000);
+            }
+
+            for (Player player : Players.getLoaded()) {
+                Actor target;
+                if ((target = player.getTarget()) != null && target.getName() != null && target.getName().equals(Players.getLocal().getName())) {
+                    ((WalkToAbyss) getParent()).underAttack = true;
+                    return false;
+                }
             }
 
             Npc zamorakMage = Npcs.newQuery().models(Constants.MAGE_MODEL).results().first();

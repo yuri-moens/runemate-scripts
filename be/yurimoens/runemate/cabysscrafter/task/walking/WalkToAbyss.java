@@ -7,8 +7,10 @@ import com.runemate.game.api.script.framework.task.Task;
 
 public class WalkToAbyss extends Task {
 
+    public boolean underAttack;
+
     public WalkToAbyss() {
-        add(new WalkToWildernessWall(), new JumpWildernessWall(), new WalkToMage(), new TeleportToAbyss());
+        add(new WalkToWildernessWall(), new JumpWildernessWall(), new WalkToMage(), new TeleportToAbyss(), new WalkBack());
     }
 
     @Override

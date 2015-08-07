@@ -21,11 +21,11 @@ class WalkToWildernessWall extends Task {
     public void execute() {
         Coordinate nearWall = new Coordinate(Constants.wildernessWall.getX(), Constants.wildernessWall.getY() - 2);
 
-        RegionPath path = RegionPath.buildTo(nearWall);
+        RegionPath.buildTo(nearWall).step(true);
 
-        Execution.delayUntil(() -> {
-            path.step(true);
-            return Players.getLocal().distanceTo(nearWall) < Random.nextDouble(6.5D, 8D);
-        }, 10000, 13000);
+        if (Execution.delayUntil(() -> Players.getLocal().isMoving(), 1200, 1800)) {
+            Execution.delayUntil(() -> Players.getLocal().distanceTo(Constants.wildernessWall) < Random.nextDouble(6.5D, 8D), 13000, 16000);
+        }
+
     }
 }

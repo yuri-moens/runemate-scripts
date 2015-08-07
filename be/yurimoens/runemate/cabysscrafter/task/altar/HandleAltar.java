@@ -15,7 +15,7 @@ public class HandleAltar extends Task {
     @Override
     public boolean validate() {
         return (Players.getLocal().distanceTo(Constants.innerRing.getCenter()) > 30D
-                && Players.getLocal().distanceTo(Constants.wildernessWall) > 50D);
+                && Players.getLocal().distanceTo(Constants.wildernessWall) > 70D);
     }
 
     @Override

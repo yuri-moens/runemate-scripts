@@ -1,14 +1,17 @@
 package be.yurimoens.runemate.cabysscrafter.task.abyss;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CMouse;
 import com.runemate.game.api.hybrid.entities.GameObject;
+import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.location.navigation.cognizant.RegionPath;
 import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.Players;
+import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 
@@ -29,29 +32,32 @@ class EnterRift extends Task {
 
     @Override
     public void execute() {
+        Player player = Players.getLocal();
         GameObject rift = GameObjects.newQuery().filter((gameObject) -> gameObject.getId() == RIFT_ID).results().first();
 
         if (rift != null) {
-            if (!rift.isVisible()) {
+            if (!rift.isVisible() && player.distanceTo(rift) > 2D) {
                 Coordinate nearRift = rift.getPosition().randomize(1, 1);
+
                 if (nearRift.isVisible()) {
                     nearRift.click();
                 } else {
-                    RegionPath path = RegionPath.buildTo(rift);
-                    Execution.delayUntil(() -> {
-                        path.step(true);
-                        return rift.isVisible();
-                    }, 8000, 10000);
+                    RegionPath.buildTo(rift).step(true);
+                }
+
+                if (Execution.delayUntil(player::isMoving, 1500, 2500)) {
+                    Execution.delayWhile(player::isMoving, 8000, 10000);
                 }
             }
 
-            if (!rift.isVisible()) {
-                Camera.turnTo(rift, 0.666D);
+            if (!rift.isVisible() && !Players.getLocal().isMoving()) {
+                Camera.turnTo(rift);
             }
 
-            CMouse.hopClick(rift);
-            Execution.delay(800, 1200);
-            Execution.delayUntil(() -> !rift.isValid() || (!Players.getLocal().isMoving() && Players.getLocal().distanceTo(rift) <= 2D), 4000, 7000);
+            if (CExecution.delayUntil(() -> CMouse.fastInteract(rift, "Exit-through"), Random.nextInt(450, 650), 3600, 4000)) {
+                Execution.delay(800, 1200);
+                Execution.delayUntil(() -> !rift.isValid() || (player.isMoving() && player.distanceTo(rift) <= 2D), 4000, 7000);
+            }
         }
     }
 }

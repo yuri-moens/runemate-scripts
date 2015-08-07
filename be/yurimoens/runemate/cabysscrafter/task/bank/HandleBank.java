@@ -1,7 +1,6 @@
 package be.yurimoens.runemate.cabysscrafter.task.bank;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
-import be.yurimoens.runemate.cabysscrafter.RuneType;
 import com.runemate.game.api.hybrid.entities.LocatableEntity;
 import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.local.Camera;
@@ -21,14 +20,13 @@ public class HandleBank extends Task {
 
     private LocatableEntity bank;
 
-    public HandleBank(int preset, RuneType runeType) {
-        add(new EquipGlory(), new WithdrawEssence(preset, runeType.RUNE_ID));
+    public HandleBank(int preset) {
+        add(new EquipGlory(), new WithdrawEssence(preset));
     }
 
     @Override
     public boolean validate() {
-        bank = getBank();
-        return (bank != null && !Inventory.contains(Constants.PURE_ESSENCE));
+        return ((bank = getBank()) != null && !Inventory.contains(Constants.PURE_ESSENCE));
     }
 
 
@@ -59,7 +57,7 @@ public class HandleBank extends Task {
     private LocatableEntity getBank() {
         LocatableEntityQueryResults<Npc> bankers = Npcs.newQuery().filter((npc) -> npc.getPosition().equals(new Coordinate(3097, 3494, 0))).results();
 
-        if (bankers.isEmpty() || Random.nextInt(0, 2) == 2) {
+        if (bankers.isEmpty() || Random.nextInt(2) == 1) {
             return GameObjects.newQuery().filter((gameObject) -> gameObject.getPosition().equals(new Coordinate(3097, 3495, 0))).results().nearest();
         }
 

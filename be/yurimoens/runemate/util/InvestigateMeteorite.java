@@ -4,8 +4,7 @@ import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Chatbox;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Interfaces;
 import com.runemate.game.api.hybrid.location.Coordinate;
-import com.runemate.game.api.hybrid.location.navigation.Traversal;
-import com.runemate.game.api.hybrid.location.navigation.web.WebPath;
+import com.runemate.game.api.hybrid.location.navigation.cognizant.RegionPath;
 import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.region.Npcs;
 import com.runemate.game.api.hybrid.region.Players;
@@ -47,14 +46,10 @@ public class InvestigateMeteorite extends Task implements ChatboxListener {
         DUNGEONEERING(59),
         DIVINATION(63);
 
-        private final int index;
+        public final int INDEX;
 
         Skill(int index) {
-            this.index = index;
-        }
-
-        public int getIndex() {
-            return this.index;
+            this.INDEX = index;
         }
 
         @Override
@@ -115,14 +110,14 @@ public class InvestigateMeteorite extends Task implements ChatboxListener {
         timeout.start();
         boolean hasInterface = false;
         while (timeout.isRunning() && !hasInterface) {
-            hasInterface = CInterfaces.hasInterfaceContainer(1263);
+            hasInterface = Interfaces.getAt(1263, 0) != null;
             Execution.delay(150, 250);
         }
 
         Execution.delay(260, 570);
 
         if (hasInterface) {
-            Interfaces.getAt(1263, SKILL.getIndex()).click();
+            Interfaces.getAt(1263, SKILL.INDEX).click();
             Execution.delay(0, 200);
             Interfaces.getAt(1263, 69).click();
         } else {
@@ -135,8 +130,7 @@ public class InvestigateMeteorite extends Task implements ChatboxListener {
             if (startPosition.isVisible()) {
                 startPosition.click();
             } else {
-                WebPath path = Traversal.getDefaultWeb().getPathBuilder().buildTo(startPosition);
-                path.step(true);
+                RegionPath.buildTo(startPosition).step(true);
             }
 
             timeout.reset();

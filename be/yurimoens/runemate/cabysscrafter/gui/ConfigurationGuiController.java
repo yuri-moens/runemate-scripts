@@ -63,14 +63,13 @@ class ConfigurationGuiController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cbxMeteoriteSkill.getItems().addAll(InvestigateMeteorite.Skill.values());
-        cbxMeteoriteSkill.getSelectionModel().select(InvestigateMeteorite.Skill.RUNECRAFTING);
+        cbxMeteoriteSkill.getSelectionModel().select(InvestigateMeteorite.Skill.DIVINATION);
 
         cbxRuneType.getItems().addAll(RuneType.values());
         cbxRuneType.getSelectionModel().select(RuneType.NATURE);
 
         cbxBankPreset.getItems().add("1");
         cbxBankPreset.getItems().add("2");
-        cbxBankPreset.getItems().add("None");
         cbxBankPreset.getSelectionModel().selectFirst();
 
         txtRunes.setDisable(true);
@@ -112,20 +111,13 @@ class ConfigurationGuiController implements Initializable {
             script.meteoriteSkill = cbxMeteoriteSkill.getSelectionModel().getSelectedItem();
             script.runeType = cbxRuneType.getSelectionModel().getSelectedItem();
 
-            int bankPreset;
-            try {
-                bankPreset = Integer.parseInt(cbxBankPreset.getSelectionModel().getSelectedItem());
-            } catch (NumberFormatException e) {
-                bankPreset = 0;
-            }
-
-            script.bankPreset = bankPreset;
+            script.bankPreset = Integer.parseInt(cbxBankPreset.getSelectionModel().getSelectedItem());
 
             if (finishConditions.getSelectedToggle() == btnRunes) {
                 try {
                     script.runesToCraft = Integer.parseInt(txtRunes.getText());
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid number, ignoring stop condtion.");
+                    System.out.println("Invalid number, ignoring stop condition.");
                 }
             } else if (finishConditions.getSelectedToggle() == btnTime) {
                 try {

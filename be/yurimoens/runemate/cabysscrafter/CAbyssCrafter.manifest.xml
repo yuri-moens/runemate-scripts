@@ -1,7 +1,7 @@
 <manifest>
     <main-class>be.yurimoens.runemate.cabysscrafter.CAbyssCrafter</main-class>
     <name>CAbyssCrafter</name>
-    <description>Crafts any rune through the Abyss.</description>
+    <description>Crafts any rune through the Abyss. No summoning or Tokkul-Zo support.</description>
     <version>1.0.0</version>
     <compatibility>
         <game-type>RS3</game-type>
@@ -10,7 +10,7 @@
         <category>RUNECRAFTING</category>
     </categories>
     <internal-id>CAbyssCrafter</internal-id>
-    <open-source>false</open-source>
+    <open-source>true</open-source>
     <hidden>false</hidden>
     <access>public</access>
     <tags>

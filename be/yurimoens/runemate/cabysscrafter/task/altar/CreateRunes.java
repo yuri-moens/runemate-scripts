@@ -3,9 +3,13 @@ package be.yurimoens.runemate.cabysscrafter.task.altar;
 import be.yurimoens.runemate.cabysscrafter.Constants;
 import be.yurimoens.runemate.cabysscrafter.event.CreateRunesEvent;
 import be.yurimoens.runemate.cabysscrafter.event.CreateRunesListener;
+import be.yurimoens.runemate.util.CExecution;
+import be.yurimoens.runemate.util.CMouse;
+import com.runemate.game.api.hybrid.entities.GameObject;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.region.GameObjects;
+import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 
@@ -38,20 +42,16 @@ class CreateRunes extends Task {
 
     @Override
     public void execute() {
-        GameObjects.newQuery().models(ALTAR_MODEL_ID).results().first().click();
+        GameObject altar = GameObjects.newQuery().models(ALTAR_MODEL_ID).results().first();
 
-        Camera.concurrentlyTurnTo(320, 0.666D, 0.05D);
+        if (altar != null) {
+            CExecution.delayUntil(() -> CMouse.fastInteract(altar, "Craft-rune"), Random.nextInt(450, 650), 3600, 4000);
 
-        Execution.delayUntil(() -> !Inventory.contains(Constants.PURE_ESSENCE), 5000, 6000);
-        fireCreateRunesEvent();
-    }
+            Camera.concurrentlyTurnTo(320, 0.666D, 0.05D);
 
-    public void addCreateRunesListener(CreateRunesListener listener) {
-        this.listeners.add(listener);
-    }
-
-    public void removeCreateRunesListener(CreateRunesListener listener) {
-        this.listeners.remove(listener);
+            Execution.delayUntil(() -> !Inventory.contains(Constants.PURE_ESSENCE), 5000, 6000);
+            fireCreateRunesEvent();
+        }
     }
 
     private void fireCreateRunesEvent() {

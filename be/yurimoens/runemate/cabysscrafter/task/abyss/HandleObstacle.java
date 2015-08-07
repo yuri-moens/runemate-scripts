@@ -1,12 +1,13 @@
 package be.yurimoens.runemate.cabysscrafter.task.abyss;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CMouse;
 import com.runemate.game.api.hybrid.entities.Actor;
 import com.runemate.game.api.hybrid.entities.GameObject;
+import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.location.navigation.basic.PredefinedPath;
-import com.runemate.game.api.hybrid.location.navigation.cognizant.RegionPath;
 import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.Players;
@@ -42,6 +43,7 @@ class HandleObstacle extends Task implements ChatboxListener {
 
     @Override
     public void execute() {
+        Player player = Players.getLocal();
         GameObject nearest;
         LocatableEntityQueryResults<GameObject> sortedObstacles = getObstacles().sortByDistance();
 
@@ -59,22 +61,21 @@ class HandleObstacle extends Task implements ChatboxListener {
 
         Execution.delay(300, 900);
 
+        if (!nearest.isVisible()) {
+            PredefinedPath.create(nearest.getPosition().randomize(1, 1)).step(true);
+
+            if (Execution.delayUntil(player::isMoving, 2000, 3000)) {
+                Execution.delayUntil(nearest::isVisible, 5000, 7000);
+            } else {
+                return;
+            }
+        }
+
+        CExecution.delayUntil(() -> CMouse.fastInteract(nearest, getAction(nearest)), Random.nextInt(450, 650), 3600, 4000);
+
         if (Camera.getPitch() < 0.600D) {
             Camera.concurrentlyTurnTo(320, 0.666D, 0.08);
         }
-
-        if (!nearest.isVisible()) {
-            PredefinedPath path = PredefinedPath.create(
-                    nearest.getPosition().randomize(1, 1)
-            );
-
-            Execution.delayUntil(() -> {
-                path.step(true);
-                return (nearest.isVisible());
-            }, 5000, 7000);
-        }
-
-        CMouse.hopClick(nearest);
 
         timeout = new Timer(Random.nextInt(11000, 14000));
         timeout.start();
@@ -128,5 +129,21 @@ class HandleObstacle extends Task implements ChatboxListener {
         Actor actor = Players.getLocal().getTarget();
 
         return actor != null && actor.getName().startsWith("Abyssal");
+    }
+
+    private String getAction(GameObject obstacle) {
+        String action;
+
+        switch (obstacle.getDefinition().getLocalState().getName()) {
+            case "Rock": action = "Mine"; break;
+            case "Gap": action = "Squeeze-through"; break;
+            case "Tendrils": action = "Chop"; break;
+            case "Eyes": action = "Distract"; break;
+            case "Boil": action = "Burn-down"; break;
+            case "Passage": action = "Go-through"; break;
+            default: action = "";
+        }
+
+        return action;
     }
 }
