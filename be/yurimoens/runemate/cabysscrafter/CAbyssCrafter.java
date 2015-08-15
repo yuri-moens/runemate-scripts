@@ -8,6 +8,7 @@ import be.yurimoens.runemate.cabysscrafter.task.abyss.HandleAbyss;
 import be.yurimoens.runemate.cabysscrafter.task.altar.HandleAltar;
 import be.yurimoens.runemate.cabysscrafter.task.bank.HandleBank;
 import be.yurimoens.runemate.cabysscrafter.task.walking.WalkToAbyss;
+import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CTime;
 import be.yurimoens.runemate.util.InvestigateMeteorite;
 import com.runemate.game.api.client.ClientUI;
@@ -16,6 +17,7 @@ import com.runemate.game.api.hybrid.input.Mouse;
 import com.runemate.game.api.hybrid.local.Skill;
 import com.runemate.game.api.hybrid.local.hud.interfaces.*;
 import com.runemate.game.api.hybrid.util.StopWatch;
+import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionWindow;
 import com.runemate.game.api.rs3.net.GrandExchange;
@@ -109,17 +111,14 @@ public class CAbyssCrafter extends TaskScript implements PaintListener, CreateRu
     }
 
     private void setupActionBar() {
-        while (!ActionBar.isExpanded()) {
-            ActionBar.toggleExpansion();
-            Execution.delay(1500, 2500);
-        }
+        CExecution.delayWhile(() -> !ActionBar.isExpanded() && !ActionBar.toggleExpansion(), Random.nextInt(1500, 2500), 5000, 7000);
 
-        putGloryOnBar();
-        putPouchesOnBar();
-        putSkillsOnBar();
+        CExecution.delayUntil(this::putGloryOnBar, Random.nextInt(10000, 15000), 58000, 62000);
+        CExecution.delayUntil(this::putPouchesOnBar, Random.nextInt(10000, 15000), 58000, 62000);
+        CExecution.delayUntil(this::putSkillsOnBar, Random.nextInt(10000, 15000), 58000, 62000);
     }
 
-    private void putGloryOnBar() {
+    private boolean putGloryOnBar() {
         if (ActionBar.getFirstAction("Amulet of glory") == null) {
             SpriteItem amulet;
             if ((amulet = Equipment.getItemIn(Equipment.Slot.NECK)) == null || !amulet.getDefinition().getName().startsWith("Amulet of glory")) {
@@ -128,81 +127,94 @@ public class CAbyssCrafter extends TaskScript implements PaintListener, CreateRu
             }
 
             boolean equipmentIsOpen = ActionWindow.WORN_EQUIPMENT.isOpen();
-            while (!ActionWindow.WORN_EQUIPMENT.open()) {
-                Execution.delay(4000, 6000);
+            CExecution.delayUntil(ActionWindow.WORN_EQUIPMENT::open, Random.nextInt(4000, 6000), 10000, 12000);
+
+            ActionBar.Slot freeSlot = getFreeSlot();
+            if (freeSlot != null) {
+                Mouse.drag(amulet, getFreeSlot().getComponent());
             }
 
-            while (ActionBar.getFirstAction("Amulet of glory") == null) {
-                Mouse.drag(amulet, ActionBar.Slot.ONE.getComponent());
-                Execution.delayWhile(() -> ActionBar.getFirstAction("Amulet of glory") == null, 5000, 10000);
-            }
+            Execution.delay(1200, 1800);
 
             if (!equipmentIsOpen) {
-                ActionWindow.WORN_EQUIPMENT.close();
+                CExecution.delayUntil(ActionWindow.WORN_EQUIPMENT::close, Random.nextInt(2000, 3000), 5000, 7000);
             }
         }
+
+        return ActionBar.getFirstAction("Amulet of glory") != null;
     }
 
-    private void putPouchesOnBar() {
+    private boolean putPouchesOnBar() {
         boolean inventoryIsOpen = ActionWindow.BACKPACK.isOpen();
 
         Inventory.getItems(Constants.SMALL_POUCH, Constants.MEDIUM_POUCH, Constants.LARGE_POUCH, Constants.GIANT_POUCH).stream().forEach((pouch) -> {
             if (ActionBar.getFirstAction(pouch.getId()) == null) {
-                while (!ActionWindow.BACKPACK.open()) {
-                    Execution.delay(4000, 6000);
-                }
+                CExecution.delayUntil(ActionWindow.BACKPACK::open, Random.nextInt(4000, 6000), 10000, 12000);
 
                 ActionBar.Slot freeSlot = getFreeSlot();
-
-                while (ActionBar.getFirstAction(pouch.getId()) == null) {
-                    Mouse.drag(pouch, freeSlot.getComponent());
-                    Execution.delayWhile(() -> ActionBar.getFirstAction(pouch.getId()) == null, 5000, 10000);
+                if (freeSlot != null) {
+                    Mouse.drag(pouch, getFreeSlot().getComponent());
                 }
+
+                Execution.delay(1200, 1800);
             }
         });
 
         if (!inventoryIsOpen) {
-            ActionWindow.BACKPACK.close();
+            CExecution.delayUntil(ActionWindow.BACKPACK::close, Random.nextInt(2000, 3000), 5000, 7000);
         }
+
+        for (SpriteItem pouch : Inventory.getItems(Constants.SMALL_POUCH, Constants.MEDIUM_POUCH, Constants.LARGE_POUCH, Constants.GIANT_POUCH)) {
+            if (ActionBar.getFirstAction(pouch.getId()) == null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    private void putSkillsOnBar() {
-        putSkillOnBar("Freedom", ActionWindow.DEFENCE_ABILITIES, 1449, 1, 2);
-        putSkillOnBar("Surge", ActionWindow.MAGIC_ABILITIES, 1461, 1, 2);
+    private boolean putSkillsOnBar() {
+        CExecution.delayUntil(() -> putSkillOnBar("Freedom", ActionWindow.DEFENCE_ABILITIES, 1449, 1, 2), Random.nextInt(7000, 10000), 25000, 28000);
+        CExecution.delayUntil(() -> putSkillOnBar("Surge", ActionWindow.MAGIC_ABILITIES, 1461, 1, 2), Random.nextInt(7000, 10000), 25000, 28000);
+
+        return (ActionBar.getFirstAction("Freedom") != null && ActionBar.getFirstAction("Surge") != null);
     }
 
-    private void putSkillOnBar(String name, ActionWindow actionWindow, int interfaceContainerId, int interfaceComponentId, int interfaceSubComponentId) {
+    private boolean putSkillOnBar(String name, ActionWindow actionWindow, int interfaceContainerId, int interfaceComponentId, int interfaceSubComponentId) {
         if (ActionBar.getFirstAction(name) == null) {
-            boolean actionWindowIsOpen = actionWindow.isOpen();
+            CExecution.delayUntil(actionWindow::open, Random.nextInt(4000, 6000), 10000, 12000);
 
-            while (!actionWindow.open()) {
-                Execution.delay(4000, 6000);
-            }
+            InterfaceComponent interfaceSubMenu;
 
-            InterfaceComponent interfaceSubMenu = null;
-
-            while (interfaceSubMenu == null) {
+            if (Execution.delayUntil(() -> Interfaces.getAt(interfaceContainerId, 7, 7) != null, 5000, 7000)) {
                 interfaceSubMenu = Interfaces.getAt(interfaceContainerId, 7, 7);
-                Execution.delay(250, 500);
+            } else {
+                return false;
             }
 
-            InterfaceComponent skillComponent = null;
+            InterfaceComponent skillComponent;
 
-            while (skillComponent == null) {
+            if (CExecution.delayUntil(() -> {
                 interfaceSubMenu.click();
+
+                return Interfaces.getAt(interfaceContainerId, interfaceComponentId, interfaceSubComponentId) != null;
+            }, Random.nextInt(1500, 2500), 5000, 7000)) {
                 skillComponent = Interfaces.getAt(interfaceContainerId, interfaceComponentId, interfaceSubComponentId);
-                Execution.delay(1500, 2500);
+            } else {
+                return false;
             }
 
-            while (ActionBar.getFirstAction(name) == null) {
+            ActionBar.Slot freeSlot = getFreeSlot();
+            if (freeSlot != null) {
                 Mouse.drag(skillComponent, getFreeSlot().getComponent());
-                Execution.delayWhile(() -> ActionBar.getFirstAction(name) == null, 5000, 10000);
             }
 
-            if (!actionWindowIsOpen) {
-                actionWindow.close();
-            }
+            Execution.delay(1200, 1800);
+
+            CExecution.delayUntil(actionWindow::close, Random.nextInt(2000, 3000), 5000, 7000);
         }
+
+        return ActionBar.getFirstAction(name) != null;
     }
 
     private ActionBar.Slot getFreeSlot() {
