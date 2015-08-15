@@ -2,11 +2,18 @@ package be.yurimoens.runemate.util;
 
 import com.runemate.game.api.hybrid.entities.details.Interactable;
 import com.runemate.game.api.hybrid.input.Mouse;
+import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.InteractablePoint;
 import com.runemate.game.api.hybrid.local.hud.interfaces.InterfaceComponent;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Interfaces;
 import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.script.Execution;
+
+import java.awt.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 public class CMouse {
 
@@ -32,11 +39,25 @@ public class CMouse {
     }
 
     public static void moveRandomFromPosition(int xRandom, int yRandom) {
-        Mouse.move(new InteractablePoint((int) Mouse.getPosition().getX() + Random.nextInt(-xRandom, xRandom),(int) Mouse.getPosition().getY() + Random.nextInt(-yRandom, yRandom)));
+        concurrentlyMove(new InteractablePoint((int) Mouse.getPosition().getX() + Random.nextInt(-xRandom, xRandom), (int) Mouse.getPosition().getY() + Random.nextInt(-yRandom, yRandom)));
+    }
+
+    public static Future<Boolean> concurrentlyMove(Interactable target) {
+        if (target == null || target.getInteractionPoint() == null) {
+            return new FutureTask<>(() -> false);
+        }
+
+        FutureTask task = new FutureTask(() -> Mouse.move(target));
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.submit(task);
+
+        return task;
     }
 
     public static void moveToMinimap() {
-        Mouse.move(Interfaces.getAt(1465, 0).getInteractionPoint());
+        concurrentlyMove(Interfaces.getAt(1465, 0).getInteractionPoint());
     }
 
     private static boolean interact(Interactable interactable, String action) {
