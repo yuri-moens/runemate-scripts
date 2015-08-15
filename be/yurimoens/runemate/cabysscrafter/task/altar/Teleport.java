@@ -2,7 +2,6 @@ package be.yurimoens.runemate.cabysscrafter.task.altar;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
 import be.yurimoens.runemate.util.CExecution;
-import be.yurimoens.runemate.util.CMouse;
 import com.runemate.game.api.hybrid.input.Keyboard;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Interfaces;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
@@ -38,8 +37,6 @@ class Teleport extends Task {
         }, Random.nextInt(520, 870), 3000, 4000);
 
         Keyboard.type("1", false);
-
-        CMouse.moveToMinimap();
 
         Execution.delayUntil(() -> Players.getLocal().getPosition().equals(Constants.edgevilleTeleport), 7000, 9000);
     }

@@ -48,6 +48,7 @@ class CreateRunes extends Task {
             CExecution.delayUntil(() -> CMouse.fastInteract(altar, "Craft-rune"), Random.nextInt(450, 650), 3600, 4000);
 
             Camera.concurrentlyTurnTo(320, 0.666D, 0.05D);
+            CMouse.moveToMinimap();
 
             Execution.delayUntil(() -> !Inventory.contains(Constants.PURE_ESSENCE), 5000, 6000);
             fireCreateRunesEvent();
