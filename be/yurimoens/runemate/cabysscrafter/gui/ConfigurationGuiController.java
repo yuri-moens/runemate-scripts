@@ -66,7 +66,7 @@ class ConfigurationGuiController implements Initializable {
         cbxMeteoriteSkill.getSelectionModel().select(InvestigateMeteorite.Skill.DIVINATION);
 
         cbxRuneType.getItems().addAll(RuneType.values());
-        cbxRuneType.getSelectionModel().select(RuneType.NATURE);
+        cbxRuneType.getSelectionModel().select(RuneType.BLOOD);
 
         cbxBankPreset.getItems().add("1");
         cbxBankPreset.getItems().add("2");
