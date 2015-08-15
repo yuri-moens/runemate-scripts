@@ -5,11 +5,10 @@ import be.yurimoens.runemate.util.CBank;
 import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CMouse;
 import com.runemate.game.api.hybrid.input.Keyboard;
-import com.runemate.game.api.hybrid.input.Mouse;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Equipment;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
-import com.runemate.game.api.hybrid.region.Players;
+import com.runemate.game.api.hybrid.region.Banks;
 import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.SlotAction;
@@ -52,9 +51,9 @@ class WithdrawEssence extends Task {
     public void execute() {
         if (Random.nextInt(2) == 1) {
             openBankAndWithdraw();
-            Mouse.move(Players.getLocal());
+            CMouse.concurrentlyMove(Banks.getLoaded().nearest());
         } else {
-            Mouse.move(Players.getLocal());
+            CMouse.concurrentlyMove(Banks.getLoaded().nearest());
             openBankAndWithdraw();
         }
 
@@ -78,8 +77,6 @@ class WithdrawEssence extends Task {
 
             openBankAndWithdraw();
         }
-
-        CMouse.moveToMinimap();
 
         Execution.delayUntil(Inventory::isFull, 4000, 6000);
     }
