@@ -47,6 +47,7 @@ class EnterRift extends Task {
 
                 if (Execution.delayUntil(player::isMoving, 1500, 2500)) {
                     Execution.delayWhile(player::isMoving, 8000, 10000);
+                    Execution.delay(800);
                 }
             }
 
