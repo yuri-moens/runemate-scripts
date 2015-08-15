@@ -23,7 +23,7 @@ import com.runemate.game.api.script.framework.task.Task;
 
 import java.awt.event.KeyEvent;
 
-public class WalkBack extends Task {
+class WalkBack extends Task {
 
     private final SlotAction freedom;
 

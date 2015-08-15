@@ -4,9 +4,8 @@ import be.yurimoens.runemate.cabysscrafter.Constants;
 import com.runemate.game.api.hybrid.entities.Actor;
 import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.entities.Player;
-import com.runemate.game.api.hybrid.local.Camera;
-import com.runemate.game.api.hybrid.location.navigation.Traversal;
-import com.runemate.game.api.hybrid.location.navigation.web.WebPath;
+import com.runemate.game.api.hybrid.location.Coordinate;
+import com.runemate.game.api.hybrid.location.navigation.basic.PredefinedPath;
 import com.runemate.game.api.hybrid.region.Npcs;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
@@ -24,30 +23,37 @@ class WalkToMage extends Task {
 
     @Override
     public boolean validate() {
+        Player player = Players.getLocal();
+
         return (getParent().validate()
                 && !((WalkToAbyss) getParent()).underAttack
-                && Players.getLocal().getPosition().getY() >= Constants.wildernessWall.getY()
-                && !Constants.mageArea.contains(Players.getLocal()));
+                && (player.getPosition().getY() >= Constants.wildernessWall.getY() || player.getAnimationId() == 18224)
+                && !Constants.mageArea.contains(player));
     }
 
     @Override
     public void execute() {
-        WebPath path = Traversal.getDefaultWeb().getPathBuilder().buildTo(Constants.mageArea.getCenter().randomize(3, 3));
+        Player player = Players.getLocal();
+
+        if (surge != null && !surge.isCoolingDown()) {
+            surge.activate(false);
+            Execution.delayUntil(surge::isCoolingDown, 1000);
+        }
+
+        PredefinedPath path = PredefinedPath.create(
+                new Coordinate(3103, 3545, 0).randomize(2, 2),
+                new Coordinate(3102, 3558, 0).randomize(2, 2)
+        );
 
         Execution.delayUntil(() -> {
-            if (path != null && (!Players.getLocal().isMoving() || Players.getLocal().distanceTo(path.getNext()) < 17.5D)) {
+            if (!player.isMoving() || player.distanceTo(path.getNext()) < 17.5D) {
                 path.step(true);
-                Execution.delayUntil(() -> Players.getLocal().isMoving(), 1500, 2500);
+                Execution.delayUntil(player::isMoving, 1500, 2500);
             }
 
-            if (surge != null && !surge.isCoolingDown()) {
-                surge.activate(false);
-                Execution.delayUntil(surge::isCoolingDown, 1000);
-            }
-
-            for (Player player : Players.getLoaded()) {
+            for (Player otherPlayers : Players.getLoaded()) {
                 Actor target;
-                if ((target = player.getTarget()) != null && target.getName() != null && target.getName().equals(Players.getLocal().getName())) {
+                if ((target = otherPlayers.getTarget()) != null && target.getName() != null && target.getName().equals(player.getName())) {
                     ((WalkToAbyss) getParent()).underAttack = true;
                     return false;
                 }
@@ -55,10 +61,7 @@ class WalkToMage extends Task {
 
             Npc zamorakMage = Npcs.newQuery().models(Constants.MAGE_MODEL).results().first();
 
-            if (zamorakMage != null) {
-                Camera.concurrentlyTurnTo(350, 0.300D, 0.10D);
-            }
-            return Constants.mageArea.contains(Players.getLocal())
+            return Constants.mageArea.contains(player)
                     || (zamorakMage != null && zamorakMage.isVisible());
         }, 10000, 13000);
     }
