@@ -36,18 +36,23 @@ class EnterRift extends Task {
         GameObject rift = GameObjects.newQuery().filter((gameObject) -> gameObject.getId() == RIFT_ID).results().first();
 
         if (rift != null) {
-            if (!rift.isVisible() && player.distanceTo(rift) > 2D) {
-                Coordinate nearRift = rift.getPosition().randomize(1, 1);
+            if (!rift.isVisible() && player.distanceTo(rift) > 3D) {
+                Coordinate nearRift = rift.getPosition().randomize(2, 2);
+
+                while (!nearRift.isValid() || !nearRift.isReachable()) {
+                    nearRift = rift.getPosition().randomize(2, 2);
+                }
 
                 if (nearRift.isVisible()) {
                     nearRift.click();
                 } else {
-                    RegionPath.buildTo(rift).step(true);
+                    RegionPath.buildTo(nearRift).step(true);
                 }
 
                 if (Execution.delayUntil(player::isMoving, 1500, 2500)) {
-                    Execution.delayWhile(player::isMoving, 8000, 10000);
-                    Execution.delay(800);
+                    if (Execution.delayWhile(player::isMoving, 9000, 11000)) {
+                        Execution.delay(Random.nextInt(700, 1000));
+                    }
                 }
             }
 
