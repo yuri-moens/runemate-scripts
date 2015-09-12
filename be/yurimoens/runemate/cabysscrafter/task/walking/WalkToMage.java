@@ -4,6 +4,8 @@ import be.yurimoens.runemate.cabysscrafter.Constants;
 import com.runemate.game.api.hybrid.entities.Actor;
 import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.entities.Player;
+import com.runemate.game.api.hybrid.entities.details.Interactable;
+import com.runemate.game.api.hybrid.input.Mouse;
 import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.location.navigation.basic.PredefinedPath;
 import com.runemate.game.api.hybrid.region.Npcs;
@@ -12,6 +14,11 @@ import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.SlotAction;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 class WalkToMage extends Task {
 
@@ -40,6 +47,8 @@ class WalkToMage extends Task {
             Execution.delayUntil(surge::isCoolingDown, 1000);
         }
 
+        surge();
+
         PredefinedPath path = PredefinedPath.create(
                 new Coordinate(3103, 3545, 0).randomize(2, 2),
                 new Coordinate(3102, 3558, 0).randomize(2, 2)
@@ -64,5 +73,19 @@ class WalkToMage extends Task {
             return Constants.mageArea.contains(player)
                     || (zamorakMage != null && zamorakMage.isVisible());
         }, 10000, 13000);
+    }
+
+    private Future<Boolean> surge() {
+        if (surge == null || surge.isCoolingDown()) {
+            return new FutureTask<>(() -> false);
+        }
+
+        FutureTask task = new FutureTask(() -> surge.activate(false));
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.submit(task);
+
+        return task;
     }
 }
