@@ -35,8 +35,20 @@ public class CMouse {
         moveRandomFromPosition(40, 40);
     }
 
-    public static void moveRandomFromPosition(int xRandom, int yRandom) {
-        concurrentlyMove(new InteractablePoint((int) Mouse.getPosition().getX() + Random.nextInt(-xRandom, xRandom), (int) Mouse.getPosition().getY() + Random.nextInt(-yRandom, yRandom)));
+    public static void moveRandomFromPosition(int x, int y) {
+        moveRandomFromPosition(0, x, 0, y);
+    }
+
+    public static void moveRandomFromPosition(int xLower, int xUpper, int yLower, int yUpper) {
+        int x = (int) Random.nextGaussian((double) xLower, (double) xUpper);
+        int y = (int) Random.nextGaussian((double) yLower, (double) yUpper);
+
+        if (Random.nextInt(2) == 1) {
+            x *= -1;
+            y *= -1;
+        }
+
+        concurrentlyMove(new InteractablePoint((int) Mouse.getPosition().getX() + x, (int) Mouse.getPosition().getY() + y));
     }
 
     public static Future<Boolean> concurrentlyMove(Interactable target) {
