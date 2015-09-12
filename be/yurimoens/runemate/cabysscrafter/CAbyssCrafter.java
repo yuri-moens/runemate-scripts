@@ -8,18 +8,11 @@ import be.yurimoens.runemate.cabysscrafter.task.abyss.HandleAbyss;
 import be.yurimoens.runemate.cabysscrafter.task.altar.HandleAltar;
 import be.yurimoens.runemate.cabysscrafter.task.bank.HandleBank;
 import be.yurimoens.runemate.cabysscrafter.task.walking.WalkToAbyss;
-import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CTime;
 import be.yurimoens.runemate.util.InvestigateMeteorite;
-import com.runemate.game.api.client.ClientUI;
 import com.runemate.game.api.client.paint.PaintListener;
-import com.runemate.game.api.hybrid.input.Mouse;
 import com.runemate.game.api.hybrid.local.Skill;
-import com.runemate.game.api.hybrid.local.hud.interfaces.*;
 import com.runemate.game.api.hybrid.util.StopWatch;
-import com.runemate.game.api.hybrid.util.calculations.Random;
-import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
-import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionWindow;
 import com.runemate.game.api.rs3.net.GrandExchange;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.TaskScript;
@@ -29,15 +22,45 @@ import java.awt.*;
 
 public class CAbyssCrafter extends TaskScript implements PaintListener, CreateRunesListener {
 
+    /**
+     * Variables used for outputting run information by the painter.
+     */
     private StopWatch runtime;
     private int startLevel, startExperience, runesCrafted, lapsDone, essencePrice, runePrice;
 
+    /**
+     * The bank preset to use. Can be either 1 or 2.
+     */
     public int bankPreset;
+
+    /**
+     * Return code of the GUI. -1 = still running, 0 = exited normally, anything else = error
+     */
     public int guiReturnCode = -1;
+
+    /**
+     * The amount of runes to craft before stopping the script.
+     */
     public int runesToCraft = Integer.MAX_VALUE;
+
+    /**
+     * The time in ms to run the script.
+     */
     public long timeToRun = Long.MAX_VALUE;
+
+    /**
+     * Array with the names of Abyss obstacles to ignore.
+     */
     public String[] ignoreObstacles;
+
+    /**
+     * The rune type to craft.
+     */
     public RuneType runeType;
+
+    /**
+     * The skill that should be picked at the meteorite  interface.
+     */
     public InvestigateMeteorite.Skill meteoriteSkill;
 
     @Override
@@ -60,19 +83,16 @@ public class CAbyssCrafter extends TaskScript implements PaintListener, CreateRu
         essencePrice = GrandExchange.lookup(Constants.PURE_ESSENCE).getPrice();
         runePrice = GrandExchange.lookup(runeType.RUNE_ID).getPrice();
 
-        InvestigateMeteorite investigateMeteorite = new InvestigateMeteorite(meteoriteSkill);
-        StopScript stopScript =  new StopScript(this, runtime, runesToCraft, timeToRun);
+        StopScript stopScript;
 
         getEventDispatcher().addListener(this);
-        getEventDispatcher().addListener(investigateMeteorite);
         setLoopDelay(550, 850);
 
-        setupActionBar();
         runtime.start();
 
         add(
-                stopScript,
-                investigateMeteorite,
+                (stopScript = new StopScript(this, runtime, runesToCraft, timeToRun)),
+                new InvestigateMeteorite(this, meteoriteSkill),
                 new HandleBank(bankPreset),
                 new WalkToAbyss(),
                 new HandleAbyss(this, runeType, ignoreObstacles),
@@ -110,121 +130,17 @@ public class CAbyssCrafter extends TaskScript implements PaintListener, CreateRu
         lapsDone++;
     }
 
-    private void setupActionBar() {
-        CExecution.delayWhile(() -> !ActionBar.isExpanded() && !ActionBar.toggleExpansion(), Random.nextInt(1500, 2500), 5000, 7000);
-
-        CExecution.delayUntil(this::putGloryOnBar, Random.nextInt(10000, 15000), 58000, 62000);
-        CExecution.delayUntil(this::putPouchesOnBar, Random.nextInt(10000, 15000), 58000, 62000);
-        CExecution.delayUntil(this::putSkillsOnBar, Random.nextInt(10000, 15000), 58000, 62000);
+    @Override
+    public void onPause() {
+    	if (runtime != null && runtime.isRunning()) {
+    		runtime.stop();
+    	}
     }
-
-    private boolean putGloryOnBar() {
-        if (ActionBar.getFirstAction("Amulet of glory") == null) {
-            SpriteItem amulet;
-            if ((amulet = Equipment.getItemIn(Equipment.Slot.NECK)) == null || !amulet.getDefinition().getName().startsWith("Amulet of glory")) {
-                ClientUI.sendTrayNotification("No glory found, exiting script.");
-                stop();
-            }
-
-            boolean equipmentIsOpen = ActionWindow.WORN_EQUIPMENT.isOpen();
-            CExecution.delayUntil(ActionWindow.WORN_EQUIPMENT::open, Random.nextInt(4000, 6000), 10000, 12000);
-
-            ActionBar.Slot freeSlot = getFreeSlot();
-            if (freeSlot != null) {
-                Mouse.drag(amulet, getFreeSlot().getComponent());
-            }
-
-            Execution.delay(1200, 1800);
-
-            if (!equipmentIsOpen) {
-                CExecution.delayUntil(ActionWindow.WORN_EQUIPMENT::close, Random.nextInt(2000, 3000), 5000, 7000);
-            }
-        }
-
-        return ActionBar.getFirstAction("Amulet of glory") != null;
-    }
-
-    private boolean putPouchesOnBar() {
-        boolean inventoryIsOpen = ActionWindow.BACKPACK.isOpen();
-
-        Inventory.getItems(Constants.SMALL_POUCH, Constants.MEDIUM_POUCH, Constants.LARGE_POUCH, Constants.GIANT_POUCH).stream().forEach((pouch) -> {
-            if (ActionBar.getFirstAction(pouch.getId()) == null) {
-                CExecution.delayUntil(ActionWindow.BACKPACK::open, Random.nextInt(4000, 6000), 10000, 12000);
-
-                ActionBar.Slot freeSlot = getFreeSlot();
-                if (freeSlot != null) {
-                    Mouse.drag(pouch, getFreeSlot().getComponent());
-                }
-
-                Execution.delay(1200, 1800);
-            }
-        });
-
-        if (!inventoryIsOpen) {
-            CExecution.delayUntil(ActionWindow.BACKPACK::close, Random.nextInt(2000, 3000), 5000, 7000);
-        }
-
-        for (SpriteItem pouch : Inventory.getItems(Constants.SMALL_POUCH, Constants.MEDIUM_POUCH, Constants.LARGE_POUCH, Constants.GIANT_POUCH)) {
-            if (ActionBar.getFirstAction(pouch.getId()) == null) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean putSkillsOnBar() {
-        CExecution.delayUntil(() -> putSkillOnBar("Freedom", ActionWindow.DEFENCE_ABILITIES, 1449, 1, 2), Random.nextInt(7000, 10000), 25000, 28000);
-        CExecution.delayUntil(() -> putSkillOnBar("Surge", ActionWindow.MAGIC_ABILITIES, 1461, 1, 2), Random.nextInt(7000, 10000), 25000, 28000);
-
-        return (ActionBar.getFirstAction("Freedom") != null && ActionBar.getFirstAction("Surge") != null);
-    }
-
-    private boolean putSkillOnBar(String name, ActionWindow actionWindow, int interfaceContainerId, int interfaceComponentId, int interfaceSubComponentId) {
-        if (ActionBar.getFirstAction(name) == null) {
-            CExecution.delayUntil(actionWindow::open, Random.nextInt(4000, 6000), 10000, 12000);
-
-            InterfaceComponent interfaceSubMenu;
-
-            if (Execution.delayUntil(() -> Interfaces.getAt(interfaceContainerId, 7, 7) != null, 5000, 7000)) {
-                interfaceSubMenu = Interfaces.getAt(interfaceContainerId, 7, 7);
-            } else {
-                return false;
-            }
-
-            InterfaceComponent skillComponent;
-
-            if (CExecution.delayUntil(() -> {
-                interfaceSubMenu.click();
-
-                return Interfaces.getAt(interfaceContainerId, interfaceComponentId, interfaceSubComponentId) != null;
-            }, Random.nextInt(1500, 2500), 5000, 7000)) {
-                skillComponent = Interfaces.getAt(interfaceContainerId, interfaceComponentId, interfaceSubComponentId);
-            } else {
-                return false;
-            }
-
-            ActionBar.Slot freeSlot = getFreeSlot();
-            if (freeSlot != null) {
-                Mouse.drag(skillComponent, getFreeSlot().getComponent());
-            }
-
-            Execution.delay(1200, 1800);
-
-            CExecution.delayUntil(actionWindow::close, Random.nextInt(2000, 3000), 5000, 7000);
-        }
-
-        return ActionBar.getFirstAction(name) != null;
-    }
-
-    private ActionBar.Slot getFreeSlot() {
-        for (ActionBar.Slot slot : ActionBar.Slot.values()) {
-            String name = slot.getAction() == null ? "null" : slot.getAction().getName();
-            if (name == null || (!name.startsWith("Amulet") && !name.endsWith("pouch") && !name.equals("Freedom") && !name.equals("Surge"))) {
-                return slot;
-            }
-        }
-
-        return null;
+    
+    @Override
+    public void onResume() {
+    	if (runtime != null && !runtime.isRunning()) {
+    		runtime.start();
+    	}
     }
 }
