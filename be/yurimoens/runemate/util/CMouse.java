@@ -2,14 +2,14 @@ package be.yurimoens.runemate.util;
 
 import com.runemate.game.api.hybrid.entities.details.Interactable;
 import com.runemate.game.api.hybrid.input.Mouse;
-import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.InteractablePoint;
-import com.runemate.game.api.hybrid.local.hud.interfaces.InterfaceComponent;
+import com.runemate.game.api.hybrid.local.hud.Menu;
+import com.runemate.game.api.hybrid.local.hud.MenuItem;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Interfaces;
 import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.script.Execution;
 
-import java.awt.*;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -26,12 +26,9 @@ public class CMouse {
     }
 
     public static String getTooltip() {
-        InterfaceComponent tooltip = Interfaces.getAt(1477, 805, 0);
-        if (tooltip == null || !tooltip.isValid()) {
-            return "";
-        } else {
-            return tooltip.getText();
-        }
+        List<MenuItem> menuItems;
+
+        return (menuItems = Menu.getItems()).isEmpty() ? "" : menuItems.get(0).getAction();
     }
 
     public static void moveRandomFromPosition() {
