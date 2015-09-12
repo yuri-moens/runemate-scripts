@@ -11,8 +11,6 @@ import java.awt.*;
 
 public class CFisher extends TaskScript implements PaintListener {
 
-    // anagogic ort: 24909
-
     private StopWatch runtime;
     private int startLevel, startExperience;
 
@@ -23,12 +21,19 @@ public class CFisher extends TaskScript implements PaintListener {
         startLevel = Skill.COOKING.getBaseLevel();
         startExperience = Skill.COOKING.getExperience();
 
-        InvestigateMeteorite investigateMeteorite = new InvestigateMeteorite(InvestigateMeteorite.Skill.DIVINATION);
-
         getEventDispatcher().addListener(this);
-        getEventDispatcher().addListener(investigateMeteorite);
         setLoopDelay(220, 470);
-        add(investigateMeteorite, new Drop(), new CheckUrn(), new WalkToBank(), new WalkToSpot(), new HandleBank(), new Fish()); //
+
+        add(new InvestigateMeteorite(
+                this,
+                InvestigateMeteorite.Skill.DIVINATION),
+                new Drop(),
+                new CheckUrn(),
+                new WalkToBank(),
+                new WalkToSpot(),
+                new HandleBank(),
+                new Fish()
+        );
     }
 
     @Override

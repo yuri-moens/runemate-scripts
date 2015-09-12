@@ -26,12 +26,15 @@ public class CCooker extends TaskScript implements PaintListener, HandleBankList
         startLevel = Skill.COOKING.getBaseLevel();
         startExperience = Skill.COOKING.getExperience();
 
-        InvestigateMeteorite investigateMeteorite = new InvestigateMeteorite(InvestigateMeteorite.Skill.DIVINATION);
-
         getEventDispatcher().addListener(this);
-        getEventDispatcher().addListener(investigateMeteorite);
         setLoopDelay(220, 470);
-        add(investigateMeteorite, new Cook(), new HandleBank(this), new CheckIdle(this)); //
+
+        add(
+                new InvestigateMeteorite(this, InvestigateMeteorite.Skill.DIVINATION),
+                new Cook(),
+                new HandleBank(this),
+                new CheckIdle(this)
+        );
     }
 
     @Override

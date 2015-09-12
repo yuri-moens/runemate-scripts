@@ -42,14 +42,11 @@ public class CDivination extends TaskScript implements PaintListener, ChatboxLis
         startLevel = Skill.DIVINATION.getBaseLevel();
         startExperience = Skill.DIVINATION.getExperience();
 
-        InvestigateMeteorite investigateMeteorite = new InvestigateMeteorite(meteoriteSkill);
-
         getEventDispatcher().addListener(this);
-        getEventDispatcher().addListener(investigateMeteorite);
         setLoopDelay(350, 550);
 
         add(
-                investigateMeteorite,
+                new InvestigateMeteorite(this, meteoriteSkill),
                 new RunFromCombat(),
                 new HandInChronicles(getLocation()),
                 new CaptureChronicleFragment(),

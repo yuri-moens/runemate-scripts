@@ -20,26 +20,6 @@ public final class CGraniteMiner extends TaskScript implements PaintListener {
 
     @Override
     public void onStart(String... args) {
-//        AbstractScript script = this;
-//        final ConfigurationGui gui;
-//
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                gui = new ConfigurationGui("CGraniteMiner configuration", script);
-//                gui.show();
-//            }
-//        });
-//
-//        while (gui.returnCode == 0) {
-//            Execution.delay(500);
-//        }
-//
-//        if (gui.returnCode == 2) {
-//            stop();
-//            return;
-//        }
-
         runtime = new StopWatch();
         runtime.start();
         startTime = System.currentTimeMillis();
@@ -50,7 +30,11 @@ public final class CGraniteMiner extends TaskScript implements PaintListener {
         setLoopDelay(230, 670);
         aSetting = getSettings().getProperty("setting");
 
-        add(new EquipSign(), new MineGranite(), new InvestigateMeteorite(InvestigateMeteorite.Skill.DIVINATION));
+        add(
+                new EquipSign(),
+                new MineGranite(),
+                new InvestigateMeteorite(this, InvestigateMeteorite.Skill.DIVINATION)
+        );
     }
 
     @Override

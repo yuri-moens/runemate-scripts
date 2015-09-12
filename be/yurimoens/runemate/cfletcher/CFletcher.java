@@ -50,7 +50,11 @@ public class CFletcher extends TaskScript implements PaintListener, HandleBankLi
 
         HandleBank handleBank = new HandleBank();
         handleBank.addHandleBankListener(this);
-        add(handleBank, new InvestigateMeteorite(InvestigateMeteorite.Skill.FLETCHING));
+
+        add(
+                handleBank,
+                new InvestigateMeteorite(this, InvestigateMeteorite.Skill.DIVINATION)
+        );
 
         switch (action) {
             case CUTTING: add(new CutLogs()); break;
