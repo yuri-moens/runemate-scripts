@@ -15,9 +15,11 @@ import com.runemate.game.api.script.framework.task.Task;
 class Teleport extends Task {
 
     private final SlotAction glorySlot; // Glory Hole! Where strangers become friends! Glory Hole! There's no need to know names.
+    private final SlotAction tokkulZoSlot;
 
     public Teleport() {
         glorySlot = ActionBar.getFirstAction("Amulet of glory");
+        tokkulZoSlot = ActionBar.getFirstAction("Tokkul-zo");
     }
 
     @Override
@@ -31,13 +33,19 @@ class Teleport extends Task {
         Execution.delay(350, 750);
 
         CExecution.delayWhile(() -> {
-            glorySlot.activate(false);
+            if (tokkulZoSlot == null) {
+                glorySlot.activate(false);
+            } else {
+                tokkulZoSlot.activate(false);
+            }
 
-            return Interfaces.getAt(Constants.GLORY_TELEPORT_INTERFACE, 0) == null;
+            return Interfaces.getAt(Constants.GLORY_TELEPORT_INTERFACE, 0) == null && !Players.getLocal().getPosition().equals(Constants.tokkulTeleport);
         }, Random.nextInt(520, 870), 3000, 4000);
 
-        Keyboard.type("1", false);
+        if (Interfaces.getAt(Constants.GLORY_TELEPORT_INTERFACE, 0) != null) {
+            Keyboard.type("1", false);
+        }
 
-        Execution.delayUntil(() -> Players.getLocal().getPosition().equals(Constants.edgevilleTeleport), 7000, 9000);
+        Execution.delayUntil(() -> Players.getLocal().getPosition().equals(Constants.edgevilleTeleport) || Players.getLocal().getPosition().equals(Constants.tokkulTeleport), 7000, 9000);
     }
 }
