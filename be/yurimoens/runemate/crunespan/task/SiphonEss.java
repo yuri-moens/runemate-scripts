@@ -44,7 +44,7 @@ public class SiphonEss extends Task {
         CExecution.delayUntil(() -> CMouse.fastInteract(essNpc, action2), Random.nextInt(450, 650), 3600, 4000);
         
         if (Random.nextInt(5) < 4) {
-            CMouse.moveRandomFromPosition();
+            CMouse.moveRandomFromPosition((int)Random.nextGaussian(80D, 180D), (int)Random.nextGaussian(80D, 180D));
         }
 
         if (Execution.delayUntil(() -> Players.getLocal().getAnimationId() != -1 || Players.getLocal().isMoving(), 2200, 2900)) {
