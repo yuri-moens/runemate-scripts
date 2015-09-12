@@ -1,16 +1,18 @@
 package be.yurimoens.runemate.cabysscrafter.task;
 
-import be.yurimoens.runemate.cabysscrafter.Constants;
-import be.yurimoens.runemate.cabysscrafter.event.CreateRunesEvent;
-import be.yurimoens.runemate.cabysscrafter.event.CreateRunesListener;
+import java.awt.TrayIcon;
+
 import com.runemate.game.api.client.ClientUI;
 import com.runemate.game.api.hybrid.RuneScape;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
+import com.runemate.game.api.hybrid.local.hud.interfaces.Equipment;
 import com.runemate.game.api.hybrid.util.StopWatch;
 import com.runemate.game.api.script.framework.AbstractScript;
 import com.runemate.game.api.script.framework.task.Task;
 
-import java.awt.*;
+import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.event.CreateRunesEvent;
+import be.yurimoens.runemate.cabysscrafter.event.CreateRunesListener;
 
 public class StopScript extends Task implements CreateRunesListener {
 
@@ -30,8 +32,9 @@ public class StopScript extends Task implements CreateRunesListener {
 
     @Override
     public boolean validate() {
-        return (runtime.getRuntime() >= TIME_TO_RUN || runesCrafted >= RUNES_TO_CRAFT
-                || (Bank.isOpen() && (Bank.getQuantity(Constants.PURE_ESSENCE) == 0 || Bank.getQuantity(Constants.AMULET_OF_GLORY_CHARGED) == 0)));
+        return (runtime.getRuntime() >= TIME_TO_RUN
+                || runesCrafted >= RUNES_TO_CRAFT
+                || (Bank.isOpen() && (outOfEssence() || outOfGlories())));
     }
 
     @Override
@@ -44,5 +47,14 @@ public class StopScript extends Task implements CreateRunesListener {
     @Override
     public void createRunesEventReceived(CreateRunesEvent event) {
         runesCrafted += event.RUNES_CRAFTED;
+    }
+
+    private boolean outOfGlories() {
+        return Bank.getQuantity(Constants.AMULET_OF_GLORY_CHARGED) == 0
+                && (Equipment.getItemIn(Equipment.Slot.NECK) == null || Equipment.getItemIn(Equipment.Slot.NECK).getId() == Constants.AMULET_OF_GLORY_EMPTY);
+    }
+
+    private boolean outOfEssence() {
+        return Bank.getQuantity(Constants.PURE_ESSENCE) == 0;
     }
 }
