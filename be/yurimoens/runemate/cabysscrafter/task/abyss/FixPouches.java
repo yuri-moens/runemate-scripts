@@ -29,14 +29,14 @@ class FixPouches extends Task {
         Npc darkMage = Npcs.newQuery().filter(Npcs.getModelFilter(Constants.DARK_MAGE_MODEL)).results().first();
 
         if (!darkMage.isVisible()) {
-            PredefinedPath.create(darkMage.getPosition().randomize(1, 1)).step(true);
+            PredefinedPath.create(darkMage.getPosition().randomize(2, 2)).step(true);
 
             if (Execution.delayUntil(player::isMoving, 1200, 1800)) {
                 Execution.delayUntil(() -> darkMage.isVisible() && player.distanceTo(darkMage) < 5D, 10000, 13000);
             }
         }
 
-        CExecution.delayUntil(() -> darkMage.interact("Repair-pouches"), Random.nextInt(450, 650), 3500, 4000);
+        CExecution.delayUntil(() -> darkMage.interact("Repair-pouches"), Random.nextInt(750, 950), 3500, 4000);
 
         Execution.delayWhile(() -> ChatDialog.getContinue() == null, 10000, 13000);
 
