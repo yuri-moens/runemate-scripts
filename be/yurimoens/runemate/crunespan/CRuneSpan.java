@@ -44,7 +44,10 @@ public class CRuneSpan extends TaskScript implements PaintListener {
         int gainedExperience = Skill.RUNECRAFTING.getExperience() - startExperience;
         int experiencePerHour = (int) (gainedExperience * 3600000D / runtime.getRuntime());
         long timeToNextLevel = experiencePerHour != 0 ? (long) (Skill.RUNECRAFTING.getExperienceToNextLevel() * 3600000D / experiencePerHour) : 0;
-        int gainedPoints = Integer.parseInt(Interfaces.getAt(1274, 2).getText()) - startPoints;
+        int gainedPoints = 0;
+        try {
+            gainedPoints = Integer.parseInt(Interfaces.getAt(1274, 2).getText()) - startPoints;
+        } catch (NullPointerException e) {}
         int pointsPerHour = (int) (gainedPoints * 3600000D / runtime.getRuntime());
         final int xOffset = 60;
         final int yOffset = 160;
