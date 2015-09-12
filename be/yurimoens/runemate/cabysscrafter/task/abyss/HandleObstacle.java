@@ -47,7 +47,7 @@ class HandleObstacle extends Task implements ChatboxListener {
         GameObject nearest;
         LocatableEntityQueryResults<GameObject> sortedObstacles = getObstacles().sortByDistance();
 
-        if (sortedObstacles.get(1).distanceTo(Players.getLocal()) - sortedObstacles.get(0).distanceTo(Players.getLocal()) < 7D) {
+        if (sortedObstacles.get(1).distanceTo(Players.getLocal()) - sortedObstacles.get(0).distanceTo(Players.getLocal()) < 5D) {
             List<GameObject> firstTwoList = new ArrayList<>();
             firstTwoList.add(sortedObstacles.get(0));
             firstTwoList.add(sortedObstacles.get(1));
@@ -62,7 +62,7 @@ class HandleObstacle extends Task implements ChatboxListener {
         Execution.delay(300, 900);
 
         if (!nearest.isVisible()) {
-            PredefinedPath.create(nearest.getPosition().randomize(1, 1)).step(true);
+            PredefinedPath.create(nearest.getPosition().randomize(2, 2)).step(true);
 
             if (Execution.delayUntil(player::isMoving, 2000, 3000)) {
                 Execution.delayUntil(nearest::isVisible, 5000, 7000);
@@ -71,7 +71,7 @@ class HandleObstacle extends Task implements ChatboxListener {
             }
         }
 
-        CExecution.delayUntil(() -> CMouse.fastInteract(nearest, getAction(nearest)), Random.nextInt(450, 650), 3600, 4000);
+        CExecution.delayUntil(() -> CMouse.fastInteract(nearest, getAction(nearest)), Random.nextInt(650, 850), 3600, 4000);
 
         if (Camera.getPitch() < 0.600D) {
             Camera.concurrentlyTurnTo(320, 0.666D, 0.08);
