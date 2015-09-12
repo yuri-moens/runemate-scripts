@@ -1,0 +1,19 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.cslayeraid.CSlayerAid</main-class>
+    <name>CSlayerAid</name>
+    <description>Prayer toggling and eating.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>SLAYER</category>
+    </categories>
+    <internal-id>CSlayerAid</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Slayer</tag>
+    </tags>
+</manifest>

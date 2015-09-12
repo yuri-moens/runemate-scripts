@@ -1,0 +1,20 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.cfogafker.CFOGAFKer</main-class>
+    <name>CFOGAFKer</name>
+    <description>AFKs Fist of Guthix.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>MINIGAMES</category>
+    </categories>
+    <internal-id>CFOGAFKer</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Minigame</tag>
+        <tag>Fist of Guthix</tag>
+    </tags>
+</manifest>

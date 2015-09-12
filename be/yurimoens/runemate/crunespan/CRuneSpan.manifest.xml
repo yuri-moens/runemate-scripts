@@ -1,0 +1,20 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.crunespan.CRuneSpan</main-class>
+    <name>CRuneSpan</name>
+    <description>Does Runespan.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>RUNECRAFTING</category>
+    </categories>
+    <internal-id>CRuneSpan</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Runecrafting</tag>
+        <tag>Runespan</tag>
+    </tags>
+</manifest>

@@ -1,0 +1,20 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.csupermake.CSuperMake</main-class>
+    <name>CSuperMake</name>
+    <description>Supermakes molten glass.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>CRAFTING</category>
+    </categories>
+    <internal-id>CSuperMake</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Crafting</tag>
+        <tag>Magic</tag>
+    </tags>
+</manifest>

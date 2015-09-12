@@ -1,0 +1,21 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.ccwafker.CCWAFKer</main-class>
+    <name>CCWAFKer</name>
+    <description>AFKs in Castle wars for Thaler and tickets.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>MINIGAMES</category>
+    </categories>
+    <internal-id>CCWAFKer</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Castle Wars</tag>
+        <tag>Thaler</tag>
+        <tag>Tickets</tag>
+    </tags>
+</manifest>

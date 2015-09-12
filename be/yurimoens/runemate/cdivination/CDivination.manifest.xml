@@ -1,0 +1,19 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.cdivination.CDivination</main-class>
+    <name>CDivination</name>
+    <description>Harvests and converts stuff.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>DIVINATION</category>
+    </categories>
+    <internal-id>CDivination</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Divination</tag>
+    </tags>
+</manifest>

@@ -1,0 +1,21 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.ccitadel.CCitadel</main-class>
+    <name>CCitadel</name>
+    <description>Citadel stuff.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>FISHING</category>
+    </categories>
+    <!--Required to publish on the bot store-->
+    <internal-id>CCitadel</internal-id>
+    <!--The rest are optional-->
+    <open-source>true</open-source>
+    <hidden>true</hidden> <!--If you need to hide it from the bot store for maintenance-->
+    <access>public</access>
+    <tags>
+        <tag>Citadel</tag>
+    </tags>
+</manifest>

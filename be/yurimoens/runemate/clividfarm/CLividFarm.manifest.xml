@@ -1,0 +1,24 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.clividfarm.CLividFarm</main-class>
+    <name>CLividFarm</name>
+    <description>Does all the tasks at the livid farm, no random events.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>FARMING</category>
+    </categories>
+    <internal-id>CLividFarm</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Minigame</tag>
+        <tag>Farming</tag>
+        <tag>Magic</tag>
+        <tag>Agility</tag>
+        <tag>Construction</tag>
+        <tag>Crafting</tag>
+    </tags>
+</manifest>
