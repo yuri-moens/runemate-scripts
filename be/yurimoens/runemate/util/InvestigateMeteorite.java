@@ -10,6 +10,7 @@ import com.runemate.game.api.hybrid.region.Npcs;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.hybrid.util.Timer;
 import com.runemate.game.api.script.Execution;
+import com.runemate.game.api.script.framework.AbstractScript;
 import com.runemate.game.api.script.framework.listeners.ChatboxListener;
 import com.runemate.game.api.script.framework.listeners.events.MessageEvent;
 import com.runemate.game.api.script.framework.task.Task;
@@ -64,7 +65,9 @@ public class InvestigateMeteorite extends Task implements ChatboxListener {
     private LocatableEntityQueryResults<Npc> meteorites;
     private Timer timeout;
 
-    public InvestigateMeteorite(Skill skill)  {
+    public InvestigateMeteorite(AbstractScript script, Skill skill)  {
+        script.getEventDispatcher().addListener(this);
+
         investigatedMeteorites = new ArrayList<>();
         this.SKILL = skill;
     }
