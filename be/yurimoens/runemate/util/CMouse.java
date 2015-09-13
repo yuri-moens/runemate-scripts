@@ -45,6 +45,9 @@ public class CMouse {
 
         if (Random.nextInt(2) == 1) {
             x *= -1;
+        }
+
+        if (Random.nextInt(2) == 1) {
             y *= -1;
         }
 
