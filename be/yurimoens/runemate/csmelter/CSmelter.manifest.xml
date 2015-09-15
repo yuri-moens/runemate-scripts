@@ -1,0 +1,20 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.csmelter.CSmelter</main-class>
+    <name>CSmelter</name>
+    <description>Smelt at Edgeville.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>SMITHING</category>
+    </categories>
+    <internal-id>CSmelter</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Smelting</tag>
+        <tag>Edgeville</tag>
+    </tags>
+</manifest>
