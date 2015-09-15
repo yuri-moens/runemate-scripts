@@ -6,7 +6,6 @@ import be.yurimoens.runemate.cdivination.task.HandInChronicles;
 import be.yurimoens.runemate.cdivination.task.RunFromCombat;
 import be.yurimoens.runemate.cdivination.task.harvest.Harvest;
 import be.yurimoens.runemate.util.CTime;
-import be.yurimoens.runemate.util.InvestigateMeteorite;
 import com.runemate.game.api.client.paint.PaintListener;
 import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.local.Skill;
@@ -31,7 +30,6 @@ public class CDivination extends TaskScript implements PaintListener, ChatboxLis
     public int chronicleFragmentAmount = 10;
     public long timeToRun = Long.MAX_VALUE;
     public String action;
-    public InvestigateMeteorite.Skill meteoriteSkill = InvestigateMeteorite.Skill.DIVINATION;
 
     @Override
     public void onStart(String... args) {
@@ -46,7 +44,6 @@ public class CDivination extends TaskScript implements PaintListener, ChatboxLis
         setLoopDelay(350, 550);
 
         add(
-                new InvestigateMeteorite(this, meteoriteSkill),
                 new RunFromCombat(),
                 new HandInChronicles(getLocation()),
                 new CaptureChronicleFragment(),

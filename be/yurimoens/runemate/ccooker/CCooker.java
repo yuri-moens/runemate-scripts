@@ -6,7 +6,6 @@ import be.yurimoens.runemate.ccooker.task.CheckIdle;
 import be.yurimoens.runemate.ccooker.task.Cook;
 import be.yurimoens.runemate.ccooker.task.HandleBank;
 import be.yurimoens.runemate.util.CTime;
-import be.yurimoens.runemate.util.InvestigateMeteorite;
 import com.runemate.game.api.client.paint.PaintListener;
 import com.runemate.game.api.hybrid.local.Skill;
 import com.runemate.game.api.hybrid.util.StopWatch;
@@ -30,7 +29,6 @@ public class CCooker extends TaskScript implements PaintListener, HandleBankList
         setLoopDelay(220, 470);
 
         add(
-                new InvestigateMeteorite(this, InvestigateMeteorite.Skill.DIVINATION),
                 new Cook(),
                 new HandleBank(this),
                 new CheckIdle(this)

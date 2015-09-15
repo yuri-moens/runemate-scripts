@@ -2,7 +2,6 @@ package be.yurimoens.runemate.cgraniteminer;
 
 import be.yurimoens.runemate.cgraniteminer.task.EquipSign;
 import be.yurimoens.runemate.cgraniteminer.task.MineGranite;
-import be.yurimoens.runemate.util.InvestigateMeteorite;
 import com.runemate.game.api.client.paint.PaintListener;
 import com.runemate.game.api.hybrid.local.Skill;
 import com.runemate.game.api.hybrid.util.StopWatch;
@@ -32,8 +31,7 @@ public final class CGraniteMiner extends TaskScript implements PaintListener {
 
         add(
                 new EquipSign(),
-                new MineGranite(),
-                new InvestigateMeteorite(this, InvestigateMeteorite.Skill.DIVINATION)
+                new MineGranite()
         );
     }
 

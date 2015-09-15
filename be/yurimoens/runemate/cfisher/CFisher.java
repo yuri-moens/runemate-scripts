@@ -1,7 +1,6 @@
 package be.yurimoens.runemate.cfisher;
 
 import be.yurimoens.runemate.cfisher.task.*;
-import be.yurimoens.runemate.util.InvestigateMeteorite;
 import com.runemate.game.api.client.paint.PaintListener;
 import com.runemate.game.api.hybrid.local.Skill;
 import com.runemate.game.api.hybrid.util.StopWatch;
@@ -24,9 +23,7 @@ public class CFisher extends TaskScript implements PaintListener {
         getEventDispatcher().addListener(this);
         setLoopDelay(220, 470);
 
-        add(new InvestigateMeteorite(
-                this,
-                InvestigateMeteorite.Skill.DIVINATION),
+        add(
                 new Drop(),
                 new CheckUrn(),
                 new WalkToBank(),

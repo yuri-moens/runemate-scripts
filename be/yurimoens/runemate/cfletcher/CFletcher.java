@@ -6,7 +6,6 @@ import be.yurimoens.runemate.cfletcher.task.CutLogs;
 import be.yurimoens.runemate.cfletcher.task.HandleBank;
 import be.yurimoens.runemate.cfletcher.task.StringBows;
 import be.yurimoens.runemate.util.CTime;
-import be.yurimoens.runemate.util.InvestigateMeteorite;
 import com.runemate.game.api.client.paint.PaintListener;
 import com.runemate.game.api.hybrid.local.Skill;
 import com.runemate.game.api.hybrid.util.StopWatch;
@@ -52,8 +51,7 @@ public class CFletcher extends TaskScript implements PaintListener, HandleBankLi
         handleBank.addHandleBankListener(this);
 
         add(
-                handleBank,
-                new InvestigateMeteorite(this, InvestigateMeteorite.Skill.DIVINATION)
+                handleBank
         );
 
         switch (action) {
