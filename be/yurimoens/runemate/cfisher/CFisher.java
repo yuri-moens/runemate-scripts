@@ -2,6 +2,7 @@ package be.yurimoens.runemate.cfisher;
 
 import be.yurimoens.runemate.cfisher.task.*;
 import com.runemate.game.api.client.paint.PaintListener;
+import com.runemate.game.api.hybrid.GameEvents;
 import com.runemate.game.api.hybrid.local.Skill;
 import com.runemate.game.api.hybrid.util.StopWatch;
 import com.runemate.game.api.script.framework.task.TaskScript;
@@ -20,16 +21,21 @@ public class CFisher extends TaskScript implements PaintListener {
         startLevel = Skill.COOKING.getBaseLevel();
         startExperience = Skill.COOKING.getExperience();
 
+        GameEvents.get(GameEvents.RS3.UNEXPECTED_ITEM_HANDLER.getName()).disable();
+
+        UsePrawnBoost usePrawnBoost = new UsePrawnBoost();
         getEventDispatcher().addListener(this);
+        getEventDispatcher().addListener(usePrawnBoost);
         setLoopDelay(220, 470);
 
         add(
                 new Drop(),
-                new CheckUrn(),
-                new WalkToBank(),
-                new WalkToSpot(),
-                new HandleBank(),
-                new Fish()
+//                new CheckUrn(),
+//                new WalkToBank(),
+//                new WalkToSpot(),
+//                new HandleBank(),
+                new Fish(),
+                usePrawnBoost
         );
     }
 

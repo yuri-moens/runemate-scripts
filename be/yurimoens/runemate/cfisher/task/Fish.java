@@ -1,5 +1,6 @@
 package be.yurimoens.runemate.cfisher.task;
 
+import be.yurimoens.runemate.util.CMouse;
 import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
@@ -40,7 +41,7 @@ public class Fish extends Task {
             Camera.turnTo(currentSpot);
         }
 
-        //CMouse.fastInteract(currentSpot, "Use-rod");
-        currentSpot.interact("Use-rod");
+        CMouse.fastInteract(currentSpot, "Use-rod");
+        //currentSpot.interact("Use-rod");
     }
 }

@@ -9,6 +9,7 @@ import com.runemate.game.api.rs3.local.hud.interfaces.eoc.SlotAction;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -19,9 +20,9 @@ public class Drop extends Task {
 
     public Drop() {
         slotActions = new ArrayList<>();
-        slotActions.add(ActionBar.getFirstAction(11328));
-        slotActions.add(ActionBar.getFirstAction(11330));
-        slotActions.add(ActionBar.getFirstAction(11332));
+        slotActions.add(ActionBar.getFirstAction("Leaping trout"));
+        slotActions.add(ActionBar.getFirstAction("Leaping sturgeon"));
+        slotActions.add(ActionBar.getFirstAction("Leaping salmon"));
     }
 
     @Override
@@ -31,7 +32,7 @@ public class Drop extends Task {
 
     @Override
     public void execute() {
-        Execution.delayUntil(() -> ChatDialog.getContinue() != null);
+        Execution.delayUntil(() -> ChatDialog.getContinue() != null, 1200, 1800);
 
         while (ChatDialog.getContinue() != null) {
             Keyboard.type(" ", false);
@@ -40,9 +41,30 @@ public class Drop extends Task {
 
         Timer timeout = new Timer(8000L);
         timeout.start();
-        while (timeout.isRunning() && Inventory.containsAnyOf(FISH_IDS)) {
-            Collections.shuffle(slotActions);
-            slotActions.stream().forEach((slot) -> slot.activate(false));
+//        while (timeout.isRunning() && Inventory.containsAnyOf(FISH_IDS)) {
+//            Collections.shuffle(slotActions);
+//            slotActions.stream().forEach((slot) -> slot.activate(false));
+//        }
+
+        ArrayList<Integer> keys = new ArrayList<>(3);
+        keys.add(KeyEvent.VK_2);
+        keys.add(KeyEvent.VK_3);
+        keys.add(KeyEvent.VK_4);
+
+        Collections.shuffle(keys);
+
+        for (Integer key : keys) {
+            Keyboard.pressKey(key);
+            Execution.delay(0, 50);
+        }
+
+        Execution.delayWhile(() -> Inventory.containsAnyOf(FISH_IDS), 5000, 6000);
+
+        Collections.shuffle(keys);
+
+        for (Integer key : keys) {
+            Keyboard.releaseKey(key);
+            Execution.delay(0, 50);
         }
     }
 }
