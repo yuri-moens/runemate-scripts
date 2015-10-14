@@ -22,7 +22,7 @@ public class DestroyCracker extends Task {
 
         cracker.interact("Destroy");
 
-        if (!Execution.delayUntil(() -> Interfaces.getAt(0, 0) != null, 3000, 4000)) {
+        if (!Execution.delayUntil(() -> Interfaces.getAt(1183, 0) != null, 3000, 4000)) {
             return;
         }
 
