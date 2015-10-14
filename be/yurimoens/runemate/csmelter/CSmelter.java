@@ -10,7 +10,7 @@ public class CSmelter extends TaskScript {
     public void onStart(String... args) {
         setLoopDelay(400, 800);
 
-        add(new HandleBank(), new Smelt());
+        add(new HandleBank(this), new Smelt());
     }
 
 }

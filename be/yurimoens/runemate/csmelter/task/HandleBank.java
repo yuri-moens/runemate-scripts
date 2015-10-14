@@ -1,24 +1,31 @@
 package be.yurimoens.runemate.csmelter.task;
 
-import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CMouse;
+import com.runemate.game.api.hybrid.RuneScape;
 import com.runemate.game.api.hybrid.entities.LocatableEntity;
 import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.input.Keyboard;
 import com.runemate.game.api.hybrid.local.Camera;
+import com.runemate.game.api.hybrid.local.hud.Menu;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Interfaces;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.region.Banks;
 import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.Players;
-import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.script.Execution;
+import com.runemate.game.api.script.framework.AbstractScript;
 import com.runemate.game.api.script.framework.task.Task;
 
 import java.awt.event.KeyEvent;
 
 public class HandleBank extends Task {
+
+    private final AbstractScript SCRIPT;
+
+    public HandleBank(AbstractScript script) {
+        this.SCRIPT = script;
+    }
 
     @Override
     public boolean validate() {
@@ -28,24 +35,32 @@ public class HandleBank extends Task {
     @Override
     public void execute() {
         Player player = Players.getLocal();
-
         LocatableEntity bank = Banks.getLoaded().nearest();
+        LocatableEntity furnace = GameObjects.newQuery().names("Furnace").results().first();
 
-        if (!bank.isVisible()) {
-            Camera.turnTo(bank, 0.318D);
+        CMouse.clickOption(bank, "Bank", 0.318D);
+
+        if (furnace.isVisible()) {
+            Execution.delay(0, 500);
+
+            CMouse.hoverOption(furnace, "Smelt");
         }
 
-        if (!CExecution.delayUntil(() -> CMouse.fastInteract(bank, "Bank"), Random.nextInt(900, 1200), 4000, 5000));
-
         if (Execution.delayUntil(player::isMoving, 1800, 2400)) {
-            Camera.turnTo(294, 0.318D);
+            if (!Menu.isOpen()) {
+                Camera.turnTo(294, 0.318D);
+            }
+
             Execution.delayWhile(player::isMoving);
         }
 
-        CMouse.concurrentlyMove(GameObjects.newQuery().names("Furnace").results().first());
+        if (!Menu.isOpen() && furnace.isVisible()) {
+            CMouse.concurrentlyMove(furnace);
+        }
 
         if (Interfaces.getAt(205, 0) != null) {
             Keyboard.typeKey(KeyEvent.VK_ESCAPE);
+
             return;
         }
 
@@ -53,8 +68,13 @@ public class HandleBank extends Task {
             return;
         }
 
-        Bank.loadPreset(1, true);
+        if (Bank.containsAnyOf(444)) {
+            Bank.loadPreset(1, true);
+        } else {
+            RuneScape.logout();
+            SCRIPT.stop();
+        }
 
-        Execution.delayUntil(() -> Inventory.contains(444), 2000, 3000);
+        Execution.delayUntil(() -> !Bank.isOpen(), 2000, 3000);
     }
 }
