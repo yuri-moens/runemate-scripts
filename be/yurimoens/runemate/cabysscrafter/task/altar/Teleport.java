@@ -1,12 +1,14 @@
 package be.yurimoens.runemate.cabysscrafter.task.altar;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.Location;
 import be.yurimoens.runemate.util.CExecution;
 import com.runemate.game.api.hybrid.input.Keyboard;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Interfaces;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.hybrid.util.calculations.Random;
+import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.SlotAction;
 import com.runemate.game.api.script.Execution;
@@ -19,7 +21,7 @@ class Teleport extends Task {
 
     public Teleport() {
         glorySlot = ActionBar.getFirstAction("Amulet of glory");
-        tokkulZoSlot = ActionBar.getFirstAction("Tokkul-zo");
+        tokkulZoSlot = ActionBar.getFirstAction("TokKul-Zo (Charged)");
     }
 
     @Override
@@ -32,20 +34,28 @@ class Teleport extends Task {
     public void execute() {
         Execution.delay(350, 750);
 
-        CExecution.delayWhile(() -> {
-            if (tokkulZoSlot == null) {
-                glorySlot.activate(false);
-            } else {
-                tokkulZoSlot.activate(false);
-            }
-
-            return Interfaces.getAt(Constants.GLORY_TELEPORT_INTERFACE, 0) == null && !Players.getLocal().getPosition().equals(Constants.tokkulTeleport);
-        }, Random.nextInt(520, 870), 3000, 4000);
-
-        if (Interfaces.getAt(Constants.GLORY_TELEPORT_INTERFACE, 0) != null) {
-            Keyboard.type("1", false);
+        if (tokkulZoSlot == null) {
+            glorySlot.activate(false);
+        } else {
+            tokkulZoSlot.activate(false);
         }
 
-        Execution.delayUntil(() -> Players.getLocal().getPosition().equals(Constants.edgevilleTeleport) || Players.getLocal().getPosition().equals(Constants.tokkulTeleport), 7000, 9000);
+        if (!Execution.delayWhile(() -> Interfaces.getAt(Constants.TELEPORT_INTERFACE, 0) == null, 3000, 4000)) {
+            return;
+        }
+
+        if (Interfaces.getAt(Constants.TELEPORT_INTERFACE, 0) != null) {
+            if (tokkulZoSlot == null) {
+                Keyboard.type("1", false);
+            } else {
+                if (Summoning.getPoints() <= 10 && Summoning.getMinutesRemaining() <= 2) {
+                    Keyboard.type("1", false);
+                } else {
+                    Keyboard.type("4", false);
+                }
+            }
+        }
+
+        Execution.delayUntil(() -> Location.getLocation() == Location.EDGEVILLE || Location.getLocation() == Location.TZHAAR_CAVES || Location.getLocation() == Location.TZHAAR_PLAZA, 7000, 9000);
     }
 }

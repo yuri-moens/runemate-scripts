@@ -1,6 +1,7 @@
 package be.yurimoens.runemate.cabysscrafter.task.walking;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.Location;
 import com.runemate.game.api.hybrid.entities.Actor;
 import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.entities.Player;
@@ -23,9 +24,11 @@ import java.util.concurrent.FutureTask;
 class WalkToMage extends Task {
 
     private final SlotAction surge;
+    private final SlotAction anticipation;
 
     public WalkToMage() {
         surge = ActionBar.getFirstAction("Surge");
+        anticipation = ActionBar.getFirstAction("Anticipation");
     }
 
     @Override
@@ -34,8 +37,7 @@ class WalkToMage extends Task {
 
         return (getParent().validate()
                 && !((WalkToAbyss) getParent()).underAttack
-                && (player.getPosition().getY() >= Constants.wildernessWall.getY() || player.getAnimationId() == 18224)
-                && !Constants.mageArea.contains(player));
+                && (Location.getLocation() == Location.WILDERNESS || player.getAnimationId() == 18224));
     }
 
     @Override
@@ -76,15 +78,22 @@ class WalkToMage extends Task {
     }
 
     private Future<Boolean> surge() {
-        if (surge == null || surge.isCoolingDown()) {
+        if (surge == null || surge.isCoolingDown() || Players.getLocal().getPosition().getX() == 3093) {
             return new FutureTask<>(() -> false);
         }
 
         FutureTask task = new FutureTask(() -> surge.activate(false));
+        FutureTask task2;
+
+        if (anticipation != null) {
+            task2 = new FutureTask(() -> anticipation.activate(false));
+        } else {
+            task2 = new FutureTask<>(() -> false);
+        }
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-        executorService.submit(task);
+        executorService.submit(task, task2);
 
         return task;
     }

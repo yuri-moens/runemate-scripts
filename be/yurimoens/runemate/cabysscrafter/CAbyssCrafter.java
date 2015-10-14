@@ -7,18 +7,26 @@ import be.yurimoens.runemate.cabysscrafter.task.StopScript;
 import be.yurimoens.runemate.cabysscrafter.task.abyss.HandleAbyss;
 import be.yurimoens.runemate.cabysscrafter.task.altar.HandleAltar;
 import be.yurimoens.runemate.cabysscrafter.task.bank.HandleBank;
+import be.yurimoens.runemate.cabysscrafter.task.summoning.RenewPoints;
+import be.yurimoens.runemate.cabysscrafter.task.summoning.SummonFamiliar;
 import be.yurimoens.runemate.cabysscrafter.task.walking.WalkToAbyss;
 import be.yurimoens.runemate.util.CTime;
-import be.yurimoens.runemate.util.InvestigateMeteorite;
 import com.runemate.game.api.client.paint.PaintListener;
+import com.runemate.game.api.hybrid.GameEvents;
 import com.runemate.game.api.hybrid.local.Skill;
+import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
+import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
+import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.util.StopWatch;
+import com.runemate.game.api.hybrid.util.calculations.Random;
+import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.rs3.net.GrandExchange;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.TaskScript;
 import javafx.application.Platform;
 
 import java.awt.*;
+import java.util.function.Predicate;
 
 public class CAbyssCrafter extends TaskScript implements PaintListener, CreateRunesListener {
 
@@ -58,11 +66,6 @@ public class CAbyssCrafter extends TaskScript implements PaintListener, CreateRu
      */
     public RuneType runeType;
 
-    /**
-     * The skill that should be picked at the meteorite  interface.
-     */
-    public InvestigateMeteorite.Skill meteoriteSkill;
-
     @Override
     public void onStart(String... args) {
         Platform.runLater(() -> new ConfigurationGui(this));
@@ -82,17 +85,19 @@ public class CAbyssCrafter extends TaskScript implements PaintListener, CreateRu
         startExperience = Skill.RUNECRAFTING.getExperience();
         essencePrice = GrandExchange.lookup(Constants.PURE_ESSENCE).getPrice();
         runePrice = GrandExchange.lookup(runeType.RUNE_ID).getPrice();
+        GameEvents.get(GameEvents.RS3.UNEXPECTED_ITEM_HANDLER.getName()).disable();
 
         StopScript stopScript;
 
         getEventDispatcher().addListener(this);
-        setLoopDelay(550, 850);
+        setLoopDelay(600, 950);
 
         runtime.start();
 
         add(
                 (stopScript = new StopScript(this, runtime, runesToCraft, timeToRun)),
-                new InvestigateMeteorite(this, meteoriteSkill),
+                new RenewPoints(),
+                new SummonFamiliar(),
                 new HandleBank(bankPreset),
                 new WalkToAbyss(),
                 new HandleAbyss(this, runeType, ignoreObstacles),

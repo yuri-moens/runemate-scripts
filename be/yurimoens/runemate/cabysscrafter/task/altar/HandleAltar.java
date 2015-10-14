@@ -1,6 +1,7 @@
 package be.yurimoens.runemate.cabysscrafter.task.altar;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.Location;
 import be.yurimoens.runemate.cabysscrafter.RuneType;
 import be.yurimoens.runemate.cabysscrafter.event.CreateRunesListener;
 import com.runemate.game.api.hybrid.region.Players;
@@ -14,8 +15,7 @@ public class HandleAltar extends Task {
 
     @Override
     public boolean validate() {
-        return (Players.getLocal().distanceTo(Constants.innerRing.getCenter()) > 30D
-                && Players.getLocal().distanceTo(Constants.wildernessWall) > 70D);
+        return (Location.getLocation() == Location.ALTAR);
     }
 
     @Override

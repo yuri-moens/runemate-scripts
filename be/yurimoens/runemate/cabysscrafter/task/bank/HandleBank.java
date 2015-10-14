@@ -55,7 +55,9 @@ public class HandleBank extends Task {
     }
 
     private LocatableEntity getBank() {
-        LocatableEntityQueryResults<Npc> bankers = Npcs.newQuery().filter((npc) -> npc.getPosition().equals(new Coordinate(3097, 3494, 0))).results();
+        LocatableEntityQueryResults<Npc> bankers = Npcs.newQuery().filter(
+                (npc) -> npc.getPosition().equals(new Coordinate(3097, 3494, 0)) || npc.getPosition().equals(new Coordinate(4742, 5172, 0))
+        ).results();
 
         if (bankers.isEmpty() || Random.nextInt(2) == 1) {
             return GameObjects.newQuery().filter((gameObject) -> gameObject.getPosition().equals(new Coordinate(3097, 3495, 0))).results().nearest();

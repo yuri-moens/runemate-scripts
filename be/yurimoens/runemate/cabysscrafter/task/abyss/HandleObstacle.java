@@ -1,12 +1,14 @@
 package be.yurimoens.runemate.cabysscrafter.task.abyss;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.Location;
 import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CMouse;
 import com.runemate.game.api.hybrid.entities.Actor;
 import com.runemate.game.api.hybrid.entities.GameObject;
 import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.Camera;
+import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.location.navigation.basic.PredefinedPath;
 import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.region.GameObjects;
@@ -37,7 +39,7 @@ class HandleObstacle extends Task implements ChatboxListener {
     @Override
     public boolean validate() {
         return (getParent().validate()
-                && !Constants.innerRing.contains(Players.getLocal())
+                && Location.getLocation() != Location.INNER_RING
                 && !getObstacles().isEmpty());
     }
 
@@ -62,16 +64,18 @@ class HandleObstacle extends Task implements ChatboxListener {
         Execution.delay(300, 900);
 
         if (!nearest.isVisible()) {
-            PredefinedPath.create(nearest.getPosition().randomize(2, 2)).step(true);
+            PredefinedPath.create(getCoordinateNearObstacle(nearest)).step(true);
 
             if (Execution.delayUntil(player::isMoving, 2000, 3000)) {
-                Execution.delayUntil(nearest::isVisible, 5000, 7000);
+                Execution.delayWhile(player::isMoving, 5000, 7000);
             } else {
                 return;
             }
         }
 
-        CExecution.delayUntil(() -> CMouse.fastInteract(nearest, getAction(nearest)), Random.nextInt(650, 850), 3600, 4000);
+        if (!CExecution.delayUntil(() -> CMouse.fastInteract(nearest, getAction(nearest)), Random.nextInt(850, 1100), 3600, 4000)) {
+            return;
+        }
 
         if (Camera.getPitch() < 0.600D) {
             Camera.concurrentlyTurnTo(320, 0.666D, 0.08);
@@ -85,7 +89,7 @@ class HandleObstacle extends Task implements ChatboxListener {
 
         if (passedObstacle) {
             passedObstacle = false;
-            Execution.delayUntil(() -> Constants.innerRing.contains(Players.getLocal()), 5000, 7000);
+            Execution.delayUntil(() -> Location.getLocation() == Location.INNER_RING, 5000, 7000);
         }
     }
 
@@ -145,5 +149,22 @@ class HandleObstacle extends Task implements ChatboxListener {
         }
 
         return action;
+    }
+
+    private Coordinate getCoordinateNearObstacle(GameObject obstacle) {
+        Coordinate nearObstacle = null;
+
+        final int obstacleX = obstacle.getPosition().getX();
+        final int obstacleY = obstacle.getPosition().getY();
+        final int obstaclePlane = obstacle.getPosition().getPlane();
+
+        switch (obstacle.getOrientationAsAngle()) {
+            case 0: nearObstacle = new Coordinate(obstacleX + (int)Random.nextGaussian(-1, 2), obstacleY + 1, obstaclePlane); break;
+            case 90: nearObstacle = new Coordinate(obstacleX + 1, obstacleY + (int)Random.nextGaussian(-1, 2), obstaclePlane); break;
+            case 180: nearObstacle = new Coordinate(obstacleX + (int)Random.nextGaussian(-1, 2), obstacleY - 1, obstaclePlane); break;
+            case 270: nearObstacle = new Coordinate(obstacleX - 1, obstacleY + (int)Random.nextGaussian(-1, 2), obstaclePlane); break;
+        }
+
+        return nearObstacle;
     }
 }

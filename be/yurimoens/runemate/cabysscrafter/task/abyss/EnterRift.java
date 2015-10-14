@@ -1,6 +1,7 @@
 package be.yurimoens.runemate.cabysscrafter.task.abyss;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.Location;
 import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CMouse;
 import com.runemate.game.api.hybrid.entities.GameObject;
@@ -8,6 +9,7 @@ import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.location.Coordinate;
+import com.runemate.game.api.hybrid.location.navigation.basic.PredefinedPath;
 import com.runemate.game.api.hybrid.location.navigation.cognizant.RegionPath;
 import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.Players;
@@ -26,7 +28,7 @@ class EnterRift extends Task {
     @Override
     public boolean validate() {
         return (getParent().validate()
-                && Constants.innerRing.contains(Players.getLocal())
+                && Location.getLocation() == Location.INNER_RING
                 && !Inventory.containsAnyOf(Constants.DEGRADED_POUCH_IDS));
     }
 
@@ -37,21 +39,17 @@ class EnterRift extends Task {
 
         if (rift != null) {
             if (!rift.isVisible() && player.distanceTo(rift) > 3D) {
-                Coordinate nearRift = rift.getPosition().randomize(2, 2);
-
-                while (!nearRift.isValid() || !nearRift.isReachable()) {
-                    nearRift = rift.getPosition().randomize(2, 2);
-                }
+                Coordinate nearRift = getCoordinateNearRift(rift);
 
                 if (nearRift.isVisible()) {
                     nearRift.click();
                 } else {
-                    RegionPath.buildTo(nearRift).step(true);
+                    PredefinedPath.create(nearRift).step(true);
                 }
 
                 if (Execution.delayUntil(player::isMoving, 1500, 2500)) {
                     if (Execution.delayWhile(player::isMoving, 9000, 11000)) {
-                        Execution.delay(Random.nextInt(700, 1000));
+                        Execution.delay(Random.nextInt(900, 1200));
                     }
                 }
             }
@@ -60,10 +58,27 @@ class EnterRift extends Task {
                 Camera.turnTo(rift);
             }
 
-            if (CExecution.delayUntil(() -> CMouse.fastInteract(rift, "Exit-through"), Random.nextInt(450, 650), 3600, 4000)) {
+            if (CExecution.delayUntil(() -> CMouse.accurateInteract(rift, "Exit-through"), Random.nextInt(800, 1100), 3600, 4000)) {
                 Execution.delay(800, 1200);
                 Execution.delayUntil(() -> !rift.isValid() || (player.isMoving() && player.distanceTo(rift) <= 2D), 4000, 7000);
             }
         }
+    }
+
+    private Coordinate getCoordinateNearRift(GameObject rift) {
+        Coordinate nearRift = null;
+
+        final int riftX = rift.getPosition().getX();
+        final int riftY = rift.getPosition().getY();
+        final int riftPlane = rift.getPosition().getPlane();
+
+        switch (rift.getOrientationAsAngle()) {
+            case 0: nearRift = new Coordinate(riftX - 1, riftY + (int)Random.nextGaussian(-1, 2), riftPlane); break;
+            case 90: nearRift = new Coordinate(riftX + (int)Random.nextGaussian(-1, 2), riftY + 1, riftPlane); break;
+            case 180: nearRift = new Coordinate(riftX + 1, riftY + (int)Random.nextGaussian(-1, 2), riftPlane); break;
+            case 270: nearRift = new Coordinate(riftX + (int)Random.nextGaussian(-1, 2), riftY - 1, riftPlane); break;
+        }
+
+        return nearRift;
     }
 }

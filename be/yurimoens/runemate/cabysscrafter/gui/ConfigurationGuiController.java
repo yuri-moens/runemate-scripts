@@ -2,7 +2,6 @@ package be.yurimoens.runemate.cabysscrafter.gui;
 
 import be.yurimoens.runemate.cabysscrafter.CAbyssCrafter;
 import be.yurimoens.runemate.cabysscrafter.RuneType;
-import be.yurimoens.runemate.util.InvestigateMeteorite;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,9 +14,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 class ConfigurationGuiController implements Initializable {
-
-    @FXML
-    private ChoiceBox<InvestigateMeteorite.Skill> cbxMeteoriteSkill;
 
     @FXML
     private ChoiceBox<RuneType> cbxRuneType;
@@ -62,9 +58,6 @@ class ConfigurationGuiController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cbxMeteoriteSkill.getItems().addAll(InvestigateMeteorite.Skill.values());
-        cbxMeteoriteSkill.getSelectionModel().select(InvestigateMeteorite.Skill.DIVINATION);
-
         cbxRuneType.getItems().addAll(RuneType.values());
         cbxRuneType.getSelectionModel().select(RuneType.BLOOD);
 
@@ -108,7 +101,6 @@ class ConfigurationGuiController implements Initializable {
 
     private EventHandler<ActionEvent> btnStartAction() {
         return event -> {
-            script.meteoriteSkill = cbxMeteoriteSkill.getSelectionModel().getSelectedItem();
             script.runeType = cbxRuneType.getSelectionModel().getSelectedItem();
 
             script.bankPreset = Integer.parseInt(cbxBankPreset.getSelectionModel().getSelectedItem());

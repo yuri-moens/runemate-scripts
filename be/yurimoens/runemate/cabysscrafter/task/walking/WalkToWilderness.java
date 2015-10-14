@@ -1,6 +1,7 @@
 package be.yurimoens.runemate.cabysscrafter.task.walking;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.Location;
 import be.yurimoens.runemate.util.CExecution;
 import be.yurimoens.runemate.util.CMouse;
 import com.runemate.game.api.hybrid.entities.GameObject;
@@ -15,6 +16,8 @@ import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 
+import java.util.function.Predicate;
+
 class WalkToWilderness extends Task {
 
     private GameObject wall;
@@ -24,11 +27,16 @@ class WalkToWilderness extends Task {
         Player player = Players.getLocal();
 
         return (getParent().validate()
-                && player.getPosition().getY() < Constants.wildernessWall.getY()
+                && Location.getLocation() == Location.EDGEVILLE
                 && player.getAnimationId() == -1
-                && (wall = GameObjects.newQuery().models(Constants.WILDERNESS_WALLS)
-                    .filter((gameObject) -> gameObject.getPosition().getX() == 3102 || gameObject.getPosition().getX() == 3103 || gameObject.getPosition().getX() == 3104)
-                    .results().nearest()) != null);
+                && (wall = GameObjects.newQuery()
+                .models(Constants.WILDERNESS_WALLS)
+                .filter(
+                        ((Predicate<GameObject>) gameObject -> 3096 >= gameObject.getArea().getBottomLeft().getX() && 3096 <= gameObject.getArea().getBottomRight().getX())
+                                .or(gameObject -> 3102 >= gameObject.getArea().getBottomLeft().getX() && 3102 <= gameObject.getArea().getBottomRight().getX())
+                                .or(gameObject -> 3103 >= gameObject.getArea().getBottomLeft().getX() && 3103 <= gameObject.getArea().getBottomRight().getX())
+                                .or(gameObject -> 3104 >= gameObject.getArea().getBottomLeft().getX() && 3104 <= gameObject.getArea().getBottomRight().getX())
+                ).results().nearest()) != null);
     }
 
     @Override
@@ -36,7 +44,7 @@ class WalkToWilderness extends Task {
         Player player = Players.getLocal();
 
         if (!wall.isVisible()) {
-            Coordinate nearWall = new Coordinate(Constants.wildernessWall.getX(), Constants.wildernessWall.getY() - 2);
+            Coordinate nearWall = new Coordinate(wall.getPosition().getX() + Random.nextInt(-2, 3), wall.getPosition().getY() - Random.nextInt(2, 4));
 
             RegionPath.buildTo(nearWall).step(true);
 
@@ -49,7 +57,7 @@ class WalkToWilderness extends Task {
         }
 
         if (wall.isVisible()) {
-            CExecution.delayUntil(() -> CMouse.fastInteract(wall, "Cross"), Random.nextInt(450, 650), 4000, 5000);
+            CExecution.delayUntil(() -> wall.interact("Cross"), Random.nextInt(450, 650), 4000, 5000);
 
             Execution.delayUntil(player::isMoving, 1200, 1800);
 

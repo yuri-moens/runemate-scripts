@@ -1,6 +1,7 @@
 package be.yurimoens.runemate.cabysscrafter.task.abyss;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.Location;
 import be.yurimoens.runemate.cabysscrafter.RuneType;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.script.framework.AbstractScript;
@@ -17,7 +18,8 @@ public class HandleAbyss extends Task {
 
     @Override
     public boolean validate() {
-        return Players.getLocal().distanceTo(Constants.innerRing.getCenter()) < 35D;
+        Location location = Location.getLocation();
+        return location == Location.ABYSS || location == Location.INNER_RING;
     }
 
     @Override

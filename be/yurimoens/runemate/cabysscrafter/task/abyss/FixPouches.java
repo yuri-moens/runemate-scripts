@@ -1,6 +1,7 @@
 package be.yurimoens.runemate.cabysscrafter.task.abyss;
 
 import be.yurimoens.runemate.cabysscrafter.Constants;
+import be.yurimoens.runemate.cabysscrafter.Location;
 import be.yurimoens.runemate.util.CExecution;
 import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.entities.Player;
@@ -19,7 +20,7 @@ class FixPouches extends Task {
     @Override
     public boolean validate() {
         return (getParent().validate()
-                && Constants.innerRing.contains(Players.getLocal())
+                && Location.getLocation() == Location.INNER_RING
                 && Inventory.containsAnyOf(Constants.DEGRADED_POUCH_IDS));
     }
 
