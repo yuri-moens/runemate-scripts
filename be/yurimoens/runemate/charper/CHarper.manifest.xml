@@ -1,0 +1,21 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.charper.CHarper</main-class>
+    <name>CHarper</name>
+    <description>Harps.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>CRAFTING</category>
+    </categories>
+    <!--Required to publish on the bot store-->
+    <internal-id>CHarper</internal-id>
+    <!--The rest are optional-->
+    <open-source>true</open-source>
+    <hidden>true</hidden> <!--If you need to hide it from the bot store for maintenance-->
+    <access>public</access>
+    <tags>
+        <tag>CHarper</tag>
+    </tags>
+</manifest>

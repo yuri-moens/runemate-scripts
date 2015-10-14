@@ -1,0 +1,21 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.csuperheater.CSuperheater</main-class>
+    <name>CSuperheater</name>
+    <description>Superheats.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>SMITHING</category>
+    </categories>
+    <internal-id>CSuperheater</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Superheat</tag>
+        <tag>Smithing</tag>
+        <tag>Magic</tag>
+    </tags>
+</manifest>

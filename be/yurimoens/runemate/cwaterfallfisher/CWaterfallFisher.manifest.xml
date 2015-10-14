@@ -1,0 +1,20 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.cwaterfallfisher.CWaterfallFisher</main-class>
+    <name>CWaterfallFisher</name>
+    <description>Waterfall fisher.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>FISHING</category>
+    </categories>
+    <internal-id>CWaterfallFisher</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Waterfall</tag>
+        <tag>Fishing</tag>
+    </tags>
+</manifest>

@@ -1,0 +1,19 @@
+<manifest>
+    <main-class>be.yurimoens.runemate.cthiever.CThiever</main-class>
+    <name>CThiever</name>
+    <description>Steals stuff.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game-type>RS3</game-type>
+    </compatibility>
+    <categories>
+        <category>THIEVING</category>
+    </categories>
+    <internal-id>CThiever</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Thieving</tag>
+    </tags>
+</manifest>
